@@ -1,0 +1,185 @@
+@page
+@model Vera.Pages.InvoiceModel
+@{
+    Layout = null;
+    // Otomatik dosya adı algoritması: VERA_ProjeAdi_FaturaNo_Tarih
+    var safeTitle = Model.InvoiceProject.Title.Replace(" ", "_").Replace(".", "").Replace("/", "");
+    var autoFileName = $"VERA_{safeTitle}_INV{Model.InvoiceProject.Id}_{DateTime.Now:yyyyMMdd}";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@autoFileName</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* PDF'e yazdırırken butonun gizlenmesini sağlayan kritik CSS */
+        @@media print {
+            .no-print { display: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: white !important; padding: 0 !important; }
+            .invoice-card { box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 py-10 flex justify-center">
+
+    <div class="invoice-card bg-white w-[210mm] min-h-[297mm] p-12 shadow-2xl relative">
+        
+        @* PDF İNDİR BUTONU *@
+        <button onclick="window.print()" class="no-print absolute top-8 right-12 px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all flex items-center gap-2 active:scale-95">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            PDF Olarak İndir
+        </button>
+
+        @* ÜST BANNER *@
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 mb-10 text-white mt-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-4xl font-black tracking-tighter">VERA<span class="text-blue-300">.</span></h1>
+                    <p class="text-blue-200 text-sm font-medium mt-1">Freelance Ödeme Sistemi</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-3xl font-black text-white/30 uppercase tracking-widest">Fatura</p>
+                    <p class="text-sm font-bold text-white mt-2">@DateTime.Now.ToString("dd MMMM yyyy")</p>
+                    <p class="text-sm font-medium text-blue-200">Fatura No: #INV-2026-00@(Model.InvoiceProject.Id)</p>
+                </div>
+            </div>
+        </div>
+
+        @* TARAFLAR *@
+        <div class="grid grid-cols-2 gap-12 mb-10">
+            <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
+                <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-3">Hizmeti Veren (Freelancer)</p>
+                <h3 class="text-lg font-black text-gray-900">@Model.Freelancer.FullName</h3>
+                <p class="text-sm text-gray-500 font-medium mt-1">@(Model.Freelancer.Title ?? "Freelancer Uzman")</p>
+                <p class="text-sm text-gray-500">@Model.Freelancer.Email</p>
+                @if (!string.IsNullOrEmpty(Model.Freelancer.Skills))
+                {
+                    <div class="flex flex-wrap gap-1 mt-3">
+                        @foreach (var skill in Model.Freelancer.Skills.Split(',').Take(4))
+                        {
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded">@skill.Trim()</span>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="p-6 bg-gray-50 rounded-xl border border-gray-100">
+                <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-3">Müşteri (İşveren)</p>
+                <h3 class="text-lg font-black text-gray-900">@(Model.Employer?.FullName ?? "Bilinmeyen Müşteri")</h3>
+                <p class="text-sm text-gray-500 font-medium mt-1">@(Model.Employer?.Title ?? "Şirket")</p>
+                <p class="text-sm text-gray-500">@(Model.Employer?.Email ?? "")</p>
+            </div>
+        </div>
+
+        @* PROJE BİLGİLERİ *@
+        <div class="mb-8 p-5 bg-blue-50/50 rounded-xl border border-blue-100">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Proje Adı</p>
+                    <p class="text-lg font-black text-gray-900 mt-1">@Model.InvoiceProject.Title</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ücretlendirme Tipi</p>
+                    <p class="text-sm font-bold text-gray-900 mt-1">@(Model.InvoiceProject.IsHourly ? "Saatlik Ücret" : "Sabit Fiyat")</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Bütçe / Birim</p>
+                    <p class="text-sm font-bold text-gray-900 mt-1">₺@Model.InvoiceProject.Budget.ToString("N0")@(Model.InvoiceProject.IsHourly ? " /saat" : "")</p>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-3 font-medium leading-relaxed">@Model.InvoiceProject.Description</p>
+        </div>
+
+        @* DETAY TABLOSU *@
+        <table class="w-full mb-10">
+            <thead>
+                <tr class="bg-gray-900 text-white">
+                    <th class="text-left py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-l-lg">Açıklama</th>
+                    <th class="text-center py-3 px-4 text-[10px] font-black uppercase tracking-widest">Tarih</th>
+                    <th class="text-center py-3 px-4 text-[10px] font-black uppercase tracking-widest">Süre</th>
+                    <th class="text-right py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-r-lg">Tutar</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @if (Model.WorkLogs != null && Model.WorkLogs.Any())
+                {
+                    var rowNum = 0;
+                    @foreach (var log in Model.WorkLogs)
+                    {
+                        rowNum++;
+                        <tr class="@(rowNum % 2 == 0 ? "bg-gray-50/50" : "")">
+                            <td class="py-3.5 px-4">
+                                <p class="font-medium text-gray-900 text-sm">@log.Description</p>
+                            </td>
+                            <td class="py-3.5 px-4 text-center text-sm font-medium text-gray-500">@log.Date.ToString("dd MMM yyyy")</td>
+                            <td class="py-3.5 px-4 text-center text-sm font-bold text-gray-700">@log.Hours Saat</td>
+                            <td class="py-3.5 px-4 text-right font-bold text-gray-900 text-sm">
+                                @if (Model.InvoiceProject.IsHourly)
+                                {
+                                    @:₺@((Model.InvoiceProject.Budget * (decimal)log.Hours).ToString("N0"))
+                                }
+                                else
+                                {
+                                    @:—
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td class="py-5 px-4" colspan="2">
+                            <p class="font-bold text-gray-900">@Model.InvoiceProject.Title</p>
+                            <p class="text-sm text-gray-500 mt-1">Sabit fiyatlı proje teslimi</p>
+                        </td>
+                        <td class="py-5 px-4 text-center font-medium text-gray-700">—</td>
+                        <td class="py-5 px-4 text-right font-black text-gray-900">₺@Model.InvoiceProject.Budget.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="bg-gray-100">
+                    <td class="py-3 px-4 font-bold text-gray-900 text-sm rounded-l-lg" colspan="2">
+                        Toplam
+                    </td>
+                    <td class="py-3 px-4 text-center font-black text-gray-700 text-sm">@Model.TotalHours Saat</td>
+                    <td class="py-3 px-4 text-right font-black text-gray-900 text-sm rounded-r-lg">₺@Model.TotalAmount.ToString("N0")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        @* TOPLAM HESAPLAMA *@
+        <div class="flex justify-end mb-12">
+            <div class="w-80 space-y-3 p-6 bg-gray-50 rounded-xl border border-gray-100">
+                <div class="flex justify-between text-sm font-medium text-gray-500">
+                    <span>Ara Toplam:</span>
+                    <span>₺@Model.TotalAmount.ToString("N0")</span>
+                </div>
+                <div class="flex justify-between text-sm font-medium text-gray-500">
+                    <span>KDV (%20):</span>
+                    <span>₺@Model.TaxAmount.ToString("N0")</span>
+                </div>
+                <div class="flex justify-between text-xl font-black text-gray-900 border-t-2 border-gray-900 pt-3 mt-3">
+                    <span>Genel Toplam:</span>
+                    <span>₺@((Model.TotalAmount + Model.TaxAmount).ToString("N0"))</span>
+                </div>
+            </div>
+        </div>
+
+        @* NOTLAR *@
+        <div class="p-5 bg-yellow-50 rounded-xl border border-yellow-200 mb-8">
+            <p class="text-xs font-bold text-yellow-700 mb-1">📝 Ödeme Koşulları</p>
+            <p class="text-xs text-yellow-600 font-medium">Bu fatura, proje tesliminden sonra 7 iş günü içinde ödenmelidir. Geç ödemelere günlük %0.5 gecikme faizi uygulanır.</p>
+        </div>
+
+        @* ALT BİLGİ *@
+        <div class="text-center border-t border-gray-100 pt-6">
+            <p class="text-[10px] font-medium text-gray-400">Bu fatura Vera Freelance Sistemi tarafından otomatik olarak oluşturulmuştur.</p>
+            <p class="text-[10px] font-medium text-gray-400">Fatura ID: @autoFileName | Elektronik ortamda üretildiği için imza gerektirmez.</p>
+        </div>
+    </div>
+</body>
+</html>

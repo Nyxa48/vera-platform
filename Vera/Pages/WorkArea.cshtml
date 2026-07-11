@@ -1,0 +1,178 @@
+@page
+@model Vera.Pages.WorkAreaModel
+@{
+    ViewData["Title"] = "Çalışma Alanı";
+    Layout = "_AppLayout";
+}
+
+<div class="max-w-7xl mx-auto py-10 px-6 lg:px-8">
+    
+    <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <span class="px-3 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-black rounded-lg uppercase tracking-wider">Çalışma Alanı</span>
+                <span class="text-gray-400 text-sm font-bold">Proje ID: #@Model.CurrentProject.Id</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">@Model.CurrentProject.Title</h1>
+            <p class="text-gray-500 font-medium mt-1">Bütçe: ₺@Model.CurrentProject.Budget.ToString("N0")</p>
+        </div>
+        
+        <div class="flex flex-wrap gap-4">
+            <a href="/Invoice?id=@Model.CurrentProject.Id" target="_blank" class="px-8 py-4 bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-black rounded-2xl hover:border-blue-500 transition-all shadow-sm flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Fatura (PDF) Çıkar
+            </a>
+
+            @if (Model.CurrentProject.Status == "Tamamlandı")
+            {
+                <div class="px-8 py-4 bg-green-50 text-green-600 border border-green-200 font-black rounded-2xl flex items-center gap-2 cursor-default">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Proje Teslim Edildi & Ödendi
+                </div>
+            }
+            else
+            {
+                <form method="post" asp-page-handler="CompleteJob" asp-route-id="@Model.CurrentProject.Id">
+                    <button type="submit" onclick="return confirm('Projeyi teslim edip ödemeyi almak istediğinize emin misiniz?')" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Projeyi Teslim Et
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    @* İLERLEME BARI *@
+    @if (Model.TotalStages > 0)
+    {
+        <div class="mb-10 bg-white dark:bg-[#1E2330] rounded-[2rem] p-6 border border-gray-100 dark:border-white/5 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">📊</span>
+                    <span class="text-sm font-black text-gray-900 dark:text-white">Proje İlerleme Durumu</span>
+                </div>
+                <span class="text-sm font-black @(Model.ProgressPercent == 100 ? "text-green-500" : "text-blue-600 dark:text-blue-400")">
+                    %@Model.ProgressPercent (@Model.CompletedStages/@Model.TotalStages aşama)
+                </span>
+            </div>
+            <div class="w-full bg-gray-100 dark:bg-[#151A23] rounded-full h-3 overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-700 ease-out @(Model.ProgressPercent == 100 ? "bg-gradient-to-r from-green-400 to-emerald-500" : "bg-gradient-to-r from-blue-500 to-indigo-500")" style="width: @(Model.ProgressPercent)%"></div>
+            </div>
+        </div>
+    }
+
+    <div class="grid lg:grid-cols-2 gap-8">
+        
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm h-fit">
+            <h3 class="text-xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-500/10 text-green-500 flex items-center justify-center">🎯</span>
+                Proje Aşamaları
+            </h3>
+            
+            <div class="space-y-3">
+                @if (Model.Stages != null && Model.Stages.Any())
+                {
+                    @foreach (var stage in Model.Stages)
+                    {
+                        <div class="flex items-center gap-2">
+                            <form method="post" asp-page-handler="ToggleStage" asp-route-id="@Model.CurrentProject.Id" asp-route-stageId="@stage.Id" class="flex-1">
+                                <button type="submit" class="w-full flex items-center gap-4 p-4 rounded-2xl border transition-all @(stage.IsCompleted ? "bg-green-50/50 dark:bg-green-500/5 border-green-200 dark:border-green-500/20" : "bg-gray-50 dark:bg-[#151A23] border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-500/30")">
+                                    <div class="w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 @(stage.IsCompleted ? "bg-green-500 border-green-500 text-white" : "border-gray-300 dark:border-gray-600")">
+                                        @if (stage.IsCompleted)
+                                        {
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        }
+                                    </div>
+                                    <span class="font-bold text-left flex-1 @(stage.IsCompleted ? "text-gray-500 line-through" : "text-gray-900 dark:text-white")">
+                                        @stage.Title
+                                    </span>
+                                </button>
+                            </form>
+                            @if (Model.CurrentProject.Status != "Tamamlandı")
+                            {
+                                <form method="post" asp-page-handler="DeleteStage" asp-route-id="@Model.CurrentProject.Id" asp-route-stageId="@stage.Id">
+                                    <button type="submit" onclick="return confirm('Bu aşamayı silmek istediğinize emin misiniz?')" class="p-2.5 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all shrink-0" title="Aşamayı Sil">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center p-6 text-gray-500 text-sm font-medium">Bu proje için henüz bir aşama girilmemiş. Aşağıdan ekleyin!</div>
+                }
+            </div>
+
+            @* YENİ AŞAMA EKLEME FORMU *@
+            @if (Model.CurrentProject.Status != "Tamamlandı")
+            {
+                <form method="post" asp-page-handler="AddStage" asp-route-id="@Model.CurrentProject.Id" class="mt-6 pt-6 border-t border-gray-100 dark:border-white/5">
+                    <div class="flex gap-3">
+                        <input asp-for="NewStageTitle" type="text" placeholder="Örn: API Entegrasyonu" required class="flex-1 bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition-all text-sm font-medium" />
+                        <button type="submit" class="px-5 py-3 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-green-500/20 active:scale-95 shrink-0 flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                            Ekle
+                        </button>
+                    </div>
+                </form>
+            }
+        </div>
+
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-500 flex items-center justify-center">⏱️</span>
+                    Zaman Takibi
+                </h3>
+                <span class="px-3 py-1 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white text-xs font-black rounded-lg">
+                    Toplam: @Model.TotalWorkedHours Saat
+                </span>
+            </div>
+
+            @if (Model.CurrentProject.Status != "Tamamlandı")
+            {
+                <form method="post" asp-page-handler="AddLog" asp-route-id="@Model.CurrentProject.Id" class="mb-8 p-5 bg-gray-50 dark:bg-[#151A23] rounded-2xl border border-gray-200 dark:border-white/10">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="sm:w-32 shrink-0">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Süre (Saat)</label>
+                            <input asp-for="NewLogHours" type="number" step="0.5" min="0.5" value="1.0" class="w-full bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-bold" />
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">Yapılan İş</label>
+                            <input asp-for="NewLogDescription" type="text" placeholder="Örn: Veritabanı tabloları oluşturuldu" required class="w-full bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm font-medium" />
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full mt-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95">
+                        + Mesai Ekle
+                    </button>
+                </form>
+            }
+
+            <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 pl-1">Geçmiş Kayıtlar</h4>
+            <div class="space-y-3">
+                @if (Model.Logs != null && Model.Logs.Any())
+                {
+                    @foreach (var log in Model.Logs)
+                    {
+                        <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-transparent dark:border-white/5">
+                            <div>
+                                <p class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">@log.Description</p>
+                                <p class="text-[10px] font-medium text-gray-500">@log.Date.ToString("dd MMM yyyy, HH:mm")</p>
+                            </div>
+                            <span class="text-sm font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg shrink-0">
+                                @log.Hours Saat
+                            </span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4 text-xs font-medium text-gray-500">Henüz hiç zaman kaydedilmemiş.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

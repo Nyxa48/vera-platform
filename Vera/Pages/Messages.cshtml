@@ -1,0 +1,145 @@
+@page
+@model Vera.Pages.MessagesModel
+@{
+    ViewData["Title"] = "Mesajlarım";
+    Layout = "_AppLayout";
+}
+
+<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden" style="height: calc(100vh - 8rem);">
+        <div class="flex h-full">
+
+            @* SOL PANEL: KONUŞMA LİSTESİ *@
+            <div class="w-80 lg:w-96 border-r border-gray-100 dark:border-white/5 flex flex-col shrink-0 h-full">
+                
+                @* BAŞLIK *@
+                <div class="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
+                    <h1 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                        <span>💬</span> Mesajlar
+                    </h1>
+                    <p class="text-xs text-gray-500 font-medium mt-1">İşverenler ve yeteneklerle yazışmaların</p>
+                </div>
+
+                @* KONUŞMA LİSTESİ *@
+                <div class="flex-1 overflow-y-auto">
+                    @if (Model.Conversations.Any())
+                    {
+                        @foreach (var conv in Model.Conversations)
+                        {
+                            var isActive = Model.ActiveChatUserId == conv.UserId;
+                            <a href="/Messages?chatWith=@conv.UserId" class="flex gap-4 p-5 border-b border-gray-50 dark:border-white/[0.03] hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors cursor-pointer @(isActive ? "bg-blue-50/50 dark:bg-blue-500/5 border-l-4 border-l-blue-500" : "")">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-black shrink-0 shadow-sm text-lg">
+                                    @conv.UserName.Substring(0, 1).ToUpper()
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <h4 class="font-bold text-gray-900 dark:text-white truncate text-sm">@conv.UserName</h4>
+                                        <span class="text-[10px] font-bold text-gray-400 shrink-0 ml-2">@conv.LastMessageTime.ToString("HH:mm")</span>
+                                    </div>
+                                    <p class="text-xs font-medium text-gray-500 truncate">@conv.LastMessage</p>
+                                </div>
+                                @if (conv.UnreadCount > 0)
+                                {
+                                    <div class="self-center">
+                                        <span class="w-6 h-6 bg-blue-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md">@conv.UnreadCount</span>
+                                    </div>
+                                }
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-12 text-center">
+                            <span class="text-4xl block mb-3 opacity-50">📭</span>
+                            <p class="text-sm text-gray-500 font-medium">Henüz hiç mesajınız yok</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* SAĞ PANEL: SOHBET ALANI *@
+            <div class="flex-1 flex flex-col h-full">
+                @if (Model.ActiveChatUserId.HasValue)
+                {
+                    @* SOHBET BAŞLIĞI *@
+                    <div class="p-5 border-b border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-white/[0.02] shrink-0">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-black shadow-sm text-lg">
+                            @Model.ActiveChatUserName.Substring(0, 1).ToUpper()
+                        </div>
+                        <div>
+                            <h3 class="font-black text-gray-900 dark:text-white">@Model.ActiveChatUserName</h3>
+                            <p class="text-[10px] font-bold text-green-500 uppercase tracking-wider">Çevrimiçi</p>
+                        </div>
+                    </div>
+
+                    @* MESAJ GEÇMİŞİ *@
+                    <div class="flex-1 overflow-y-auto p-6 space-y-4" id="chatArea">
+                        @if (Model.ChatMessages != null && Model.ChatMessages.Any())
+                        {
+                            @foreach (var msg in Model.ChatMessages)
+                            {
+                                var isMine = msg.SenderId == Model.CurrentUserId;
+                                <div class="flex @(isMine ? "justify-end" : "justify-start")">
+                                    <div class="max-w-[70%]">
+                                        <div class="@(isMine ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-br-md" : "bg-gray-100 dark:bg-[#151A23] text-gray-900 dark:text-white rounded-2xl rounded-bl-md") px-5 py-3 shadow-sm">
+                                            <p class="text-sm font-medium leading-relaxed">@msg.Content</p>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-gray-400 mt-1.5 @(isMine ? "text-right" : "text-left") px-1">
+                                            @msg.SentAt.ToString("dd MMM, HH:mm")
+                                            @if (isMine)
+                                            {
+                                                @(msg.IsRead ? " ✓✓" : " ✓")
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="flex items-center justify-center h-full">
+                                <div class="text-center">
+                                    <span class="text-5xl block mb-3">👋</span>
+                                    <p class="text-gray-500 font-bold">Sohbete başla!</p>
+                                    <p class="text-xs text-gray-400 mt-1">İlk mesajını yaz ve konuşmayı başlat.</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @* MESAJ GÖNDERME FORMU *@
+                    <div class="p-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/30 dark:bg-white/[0.01] shrink-0">
+                        <form method="post" asp-page-handler="SendMessage" asp-route-chatWith="@Model.ActiveChatUserId" class="flex gap-3">
+                            <input asp-for="NewMessageContent" type="text" placeholder="Mesajınızı yazın..." required autocomplete="off" class="flex-1 bg-white dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-3.5 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                            <button type="submit" class="px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 shrink-0 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                Gönder
+                            </button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    @* BOŞ DURUM: HİÇ KONUŞMA YOK *@
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-24 h-24 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mx-auto mb-6 text-5xl">💬</div>
+                            <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">Mesajlaşmaya Başla</h3>
+                            <p class="text-gray-500 font-medium max-w-sm">Bir freelancer veya işveren ile iletişime geçtiğinde mesajların burada görünecek.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sohbet alanını en alta scroll et
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatArea = document.getElementById('chatArea');
+        if (chatArea) {
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    });
+</script>

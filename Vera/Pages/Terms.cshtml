@@ -1,0 +1,115 @@
+@page
+@model Vera.Pages.TermsModel
+@{
+    ViewData["Title"] = "Kullanım Şartları | Vera Platform";
+}
+
+<!-- Ana kapsayıcı, layout arkaplanı ile eşleşiyor -->
+<div class="relative py-12 md:py-20 space-y-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- HEADER -->
+        <div class="text-center space-y-6 mb-16 border-b border-gray-200 dark:border-gray-800 pb-12">
+            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 transform -rotate-6 shadow-sm">
+                ⚖️
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tighter">
+                Kullanım Şartları
+            </h1>
+            <p class="text-lg text-gray-500 dark:text-gray-400 font-medium max-w-2xl mx-auto">
+                Platformumuzu kullanmadan önce lütfen haklarınızı ve sorumluluklarınızı belirleyen bu resmi metni dikkatlice inceleyiniz. Son Güncelleme: <strong class="text-gray-700 dark:text-gray-300">11 Mayıs 2026</strong>
+            </p>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="space-y-12">
+            
+            <section class="group">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-colors shadow-sm">1</span>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Hizmetlerin Kapsamı ve Sınırları</h2>
+                </div>
+                <div class="pl-14">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                        Vera, işverenleri ve bağımsız çalışanları (freelancer) dijital ortamda bir araya getiren bir <strong class="text-gray-900 dark:text-white">B2B (İşletmeden İşletmeye) pazar yeri platformudur</strong>. Platformumuz, kullanıcılar arasında bir istihdam, ortaklık veya işveren-işçi ilişkisi kurmaz. Kullanıcıların platform üzerinde kurdukları iletişim ve yaptıkları anlaşmalar tamamen kendi sorumluluklarındadır.
+                    </p>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:bg-pink-600 group-hover:text-white group-hover:border-pink-500 transition-colors shadow-sm">2</span>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Escrow, Bakiye ve Ödeme İşlemleri</h2>
+                </div>
+                <div class="pl-14 space-y-4">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                        Platform üzerindeki tüm ilanlar ve ödemeler <strong>Escrow (Güvenli Havuz)</strong> prensibine göre yürütülür. İşveren bir ilanı yayınladığı anda bütçe tutarı anlık cüzdanından rezerve edilerek güvenli havuza alınır. Bu sayede freelancerın alacağı garanti altına alınır.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 font-medium space-y-2 mt-2">
+                        <li>İş teslim edilip onaylanmadan havuza alınan para freelancer'a aktarılmaz.</li>
+                        <li>Anlaşmazlık durumlarında destek ekibi tahkim kurulu olarak devreye girer.</li>
+                        <li>Para çekme talepleri iş günleri içerisinde 24 saat içinde işleme alınır.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:bg-yellow-500 group-hover:text-white group-hover:border-yellow-500 transition-colors shadow-sm">3</span>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Vergi ve Yasal Belgelendirme</h2>
+                </div>
+                <div class="pl-14 space-y-4">
+                    <div class="p-5 bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 rounded-2xl flex gap-4 items-start">
+                        <span class="text-xl">⚠️</span>
+                        <div>
+                            <h4 class="font-bold text-yellow-800 dark:text-yellow-400 text-sm mb-1">Mali Yükümlülük Bildirimi</h4>
+                            <p class="text-yellow-700 dark:text-yellow-500 text-xs font-medium leading-relaxed">
+                                Sistem üzerinden oluşturulan PDF fatura veya dekont belgeleri <strong>"Bilgilendirme Amaçlı Taslak"</strong> niteliğindedir. Vera bir muhasebe yazılımı veya resmi aracı kurum değildir. Resmi mali sorumluluklar, vergi beyannameleri ve resmi fatura kesimleri tamamen kullanıcının bulunduğu ülkenin kanunlarına tabi olup, tarafların kendi sorumluluğundadır.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-500 transition-colors shadow-sm">4</span>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Kullanıcı Davranış Kuralları</h2>
+                </div>
+                <div class="pl-14">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-medium mb-3">Sistemin sağlıklı işleyebilmesi için tüm kullanıcıların uyması gereken katı kurallar şunlardır:</p>
+                    <ul class="space-y-3 text-gray-600 dark:text-gray-400 font-medium list-disc list-inside bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
+                        <li>Platform üzerinden yasadışı, telif hakkı ihlali içeren veya etik olmayan projeler talep edilemez veya yapılamaz.</li>
+                        <li><strong>Platformu Atlatmak Yasaktır:</strong> Platform aracılığıyla tanışan tarafların ödemeleri dış kanallardan yapmaya zorlaması hesap kapatma sebebidir.</li>
+                        <li>Gerçeğe aykırı yetenek beyanında bulunmak, sahte portfolyo yüklemek veya iletişim bilgilerini gizlemek kesinlikle yasaktır.</li>
+                        <li>Spam mesajlar atmak ve haksız rekabet oluşturacak agresif fiyat kırmalar denetime tabidir.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="group">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-black flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:bg-green-600 group-hover:text-white group-hover:border-green-500 transition-colors shadow-sm">5</span>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Hesap İptali ve Fesih Hakkı</h2>
+                </div>
+                <div class="pl-14">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                        Vera, kullanım şartlarının ihlali durumunda herhangi bir ön bildirimde bulunmaksızın hesapları geçici olarak askıya alma veya tamamen silme hakkını saklı tutar. İhlal sebebiyle hesabı kapatılan kullanıcıların havuzdaki bakiye durumları bloke edilir ve adli süreçlere göre incelenir.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER CONTACT -->
+        <div class="mt-16 pt-12 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border dark:border-gray-700">
+            <div>
+                <h4 class="font-black text-gray-900 dark:text-white text-lg">Hukuki Süreçler & Sorularınız</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">Metindeki maddelerle ilgili detaylı bilgi almak için hukuk departmanımıza ulaşın.</p>
+            </div>
+            <a href="mailto:legal@vera.com" class="px-8 py-3 bg-gray-900 dark:bg-gray-900 text-white font-bold rounded-xl border border-transparent dark:border-gray-600 hover:bg-gray-800 transition-colors shadow-lg whitespace-nowrap">
+                legal@vera.com
+            </a>
+        </div>
+
+    </div>
+</div>

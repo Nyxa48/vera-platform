@@ -1,0 +1,391 @@
+@page
+@model Vera.Pages.AdminModel
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+    Layout = "_AppLayout";
+}
+
+<!-- Başarı/Hata Bildirimleri -->
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div id="successAlert" class="mb-6 p-4 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/30 rounded-2xl flex items-center gap-3 text-green-700 dark:text-green-400 font-medium animate-pulse">
+        <span class="text-xl">✅</span>
+        @Model.SuccessMessage
+        <button onclick="document.getElementById('successAlert').remove()" class="ml-auto text-green-500 hover:text-green-700 font-bold text-lg">×</button>
+    </div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div id="errorAlert" class="mb-6 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-2xl flex items-center gap-3 text-red-700 dark:text-red-400 font-medium">
+        <span class="text-xl">❌</span>
+        @Model.ErrorMessage
+        <button onclick="document.getElementById('errorAlert').remove()" class="ml-auto text-red-500 hover:text-red-700 font-bold text-lg">×</button>
+    </div>
+}
+
+<!-- HEADER -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+            🛡️ Yönetim Paneli
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 font-medium mt-1">Tüm platform verilerini buradan yönetebilirsiniz.</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="px-4 py-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-widest rounded-full border border-red-200 dark:border-red-500/20">
+            🔴 Admin Erişimi
+        </span>
+    </div>
+</div>
+
+<!-- İSTATİSTİK KARTLARI -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <!-- Toplam Kullanıcı -->
+    <div class="bg-white dark:bg-[#1E2330] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">👥</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Kullanıcılar</span>
+        </div>
+        <div class="text-3xl font-black text-gray-900 dark:text-white">@Model.TotalUsers</div>
+        <div class="flex items-center gap-2 mt-2 text-xs font-bold">
+            <span class="text-blue-600 dark:text-blue-400">@Model.TotalFreelancers Uzman</span>
+            <span class="text-gray-300">|</span>
+            <span class="text-pink-600 dark:text-pink-400">@Model.TotalEmployers İşveren</span>
+        </div>
+    </div>
+
+    <!-- Toplam Proje -->
+    <div class="bg-white dark:bg-[#1E2330] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">📁</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Projeler</span>
+        </div>
+        <div class="text-3xl font-black text-gray-900 dark:text-white">@Model.TotalProjects</div>
+        <div class="flex items-center gap-2 mt-2 text-xs font-bold">
+            <span class="text-green-600 dark:text-green-400">@Model.OpenProjects Açık</span>
+            <span class="text-gray-300">|</span>
+            <span class="text-yellow-600 dark:text-yellow-400">@Model.ActiveProjects Aktif</span>
+        </div>
+    </div>
+
+    <!-- İşlem Hacmi -->
+    <div class="bg-white dark:bg-[#1E2330] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">💰</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">İşlem Hacmi</span>
+        </div>
+        <div class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">₺@Model.TotalRevenue.ToString("N0")</div>
+        <div class="mt-2 text-xs font-bold text-gray-400">Tüm proje bütçelerinin toplamı</div>
+    </div>
+
+    <!-- Sistem Logları -->
+    <div class="bg-white dark:bg-[#1E2330] p-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">📋</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Loglar</span>
+        </div>
+        <div class="text-3xl font-black text-gray-900 dark:text-white">@Model.TotalLogs</div>
+        <div class="mt-2 text-xs font-bold text-gray-400">Sistem aktivite kaydı</div>
+    </div>
+</div>
+
+<!-- TAB NAVİGASYONU -->
+<div class="flex border-b border-gray-200 dark:border-gray-800 mb-6 gap-1 overflow-x-auto no-scrollbar">
+    <button onclick="showTab('users')" id="tab-users" class="tab-btn px-6 py-3 text-sm font-bold text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 transition-colors whitespace-nowrap">
+        👥 Kullanıcılar (@Model.TotalUsers)
+    </button>
+    <button onclick="showTab('projects')" id="tab-projects" class="tab-btn px-6 py-3 text-sm font-bold text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border-b-2 border-transparent transition-colors whitespace-nowrap">
+        📁 Projeler (@Model.TotalProjects)
+    </button>
+    <button onclick="showTab('logs')" id="tab-logs" class="tab-btn px-6 py-3 text-sm font-bold text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 border-b-2 border-transparent transition-colors whitespace-nowrap">
+        📋 Aktivite Logları (@Model.TotalLogs)
+    </button>
+</div>
+
+<!-- TAB 1: KULLANICILAR -->
+<div id="panel-users" class="tab-panel">
+    <div class="bg-white dark:bg-[#1E2330] rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/5 text-left text-xs font-black uppercase tracking-widest text-gray-500">
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Id" ? "IdDesc" : "Id")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                ID @(Model.UserSort == "Id" ? "↑" : Model.UserSort == "IdDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Name" ? "NameDesc" : "Name")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                Kullanıcı @(Model.UserSort == "Name" ? "↑" : Model.UserSort == "NameDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Email" ? "EmailDesc" : "Email")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                E-posta
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Role" ? "RoleDesc" : "Role")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                Rol
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Balance" ? "BalanceDesc" : "Balance")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                Bakiye @(Model.UserSort == "Balance" ? "↑" : Model.UserSort == "BalanceDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-UserSort="@(Model.UserSort == "Date" ? "DateDesc" : "Date")" asp-route-ActiveTab="users" class="block hover:text-blue-500 transition-colors">
+                                Kayıt @(Model.UserSort == "Date" ? "↑" : Model.UserSort == "DateDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-right">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+                    @foreach (var user in Model.AllUsers)
+                    {
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="px-6 py-4 font-bold text-gray-400">#@user.Id</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-gradient-to-br @(user.Role == "Freelancer" ? "from-blue-500 to-indigo-600" : "from-pink-500 to-rose-600") flex items-center justify-center text-white font-black text-xs shadow-md">
+                                        @user.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-900 dark:text-white">@user.FullName</div>
+                                        <div class="text-xs text-gray-400">@user.Title</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-xs font-medium">@user.Email</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-black @(user.Role == "Freelancer" ? "bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400" : "bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400")">
+                                    @(user.Role == "Freelancer" ? "🧑‍💻 Uzman" : "🏢 İşveren")
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 font-bold @(user.WalletBalance < 0 ? "text-red-600 dark:text-red-400" : "text-gray-900 dark:text-white")">
+                                ₺@user.WalletBalance.ToString("N0")
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-400">@user.CreatedAt.ToString("dd.MM.yyyy")</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-end gap-2">
+                                    <!-- Rol Değiştir -->
+                                    <form method="post" asp-page-handler="ChangeRole" class="inline">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <input type="hidden" name="newRole" value="@(user.Role == "Freelancer" ? "Employer" : "Freelancer")" />
+                                        <button type="submit" class="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-500/10 hover:text-yellow-700 dark:hover:text-yellow-400 transition-colors border border-gray-200 dark:border-white/10" title="Rol Değiştir">
+                                            🔄
+                                        </button>
+                                    </form>
+
+                                    <!-- Bakiye Güncelle -->
+                                    <button onclick="openBalanceModal(@user.Id, '@user.FullName', @user.WalletBalance)" class="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg hover:bg-green-100 dark:hover:bg-green-500/10 hover:text-green-700 dark:hover:text-green-400 transition-colors border border-gray-200 dark:border-white/10" title="Bakiye Güncelle">
+                                        💰
+                                    </button>
+
+                                    <!-- Sil -->
+                                    <form method="post" asp-page-handler="DeleteUser" class="inline" onsubmit="return confirm('⚠️ Bu kullanıcıyı ve tüm verilerini silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <button type="submit" class="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg hover:bg-red-100 dark:hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-400 transition-colors border border-gray-200 dark:border-white/10" title="Kullanıcıyı Sil">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 2: PROJELER -->
+<div id="panel-projects" class="tab-panel hidden">
+    <div class="bg-white dark:bg-[#1E2330] rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/5 text-left text-xs font-black uppercase tracking-widest text-gray-500">
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-ProjectSort="@(Model.ProjectSort == "Id" ? "IdDesc" : "Id")" asp-route-ActiveTab="projects" class="block hover:text-blue-500 transition-colors">
+                                ID @(Model.ProjectSort == "Id" ? "↑" : Model.ProjectSort == "IdDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-ProjectSort="@(Model.ProjectSort == "Title" ? "TitleDesc" : "Title")" asp-route-ActiveTab="projects" class="block hover:text-blue-500 transition-colors">
+                                Proje Adı @(Model.ProjectSort == "Title" ? "↑" : Model.ProjectSort == "TitleDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">İşveren</th>
+                        <th class="px-6 py-4">Uzman</th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-ProjectSort="@(Model.ProjectSort == "Budget" ? "BudgetDesc" : "Budget")" asp-route-ActiveTab="projects" class="block hover:text-blue-500 transition-colors">
+                                Bütçe @(Model.ProjectSort == "Budget" ? "↑" : Model.ProjectSort == "BudgetDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-ProjectSort="@(Model.ProjectSort == "Status" ? "StatusDesc" : "Status")" asp-route-ActiveTab="projects" class="block hover:text-blue-500 transition-colors">
+                                Durum
+                            </a>
+                        </th>
+                        <th class="px-6 py-4 text-right">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+                    @foreach (var project in Model.AllProjects)
+                    {
+                        var employerName = Model.UserNames.ContainsKey(project.EmployerId) ? Model.UserNames[project.EmployerId] : "Bilinmiyor";
+                        var freelancerName = project.FreelancerId.HasValue && Model.UserNames.ContainsKey(project.FreelancerId.Value) ? Model.UserNames[project.FreelancerId.Value] : "—";
+
+                        var statusColor = project.Status switch
+                        {
+                            "Açık" => "bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400",
+                            "Aktif" => "bg-yellow-100 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400",
+                            "Tamamlandı" => "bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                            _ => "bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400"
+                        };
+
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="px-6 py-4 font-bold text-gray-400">#@project.Id</td>
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-gray-900 dark:text-white">@project.Title</div>
+                                <div class="text-xs text-gray-400 mt-0.5">@project.Tags</div>
+                            </td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-600 dark:text-gray-300">@employerName</td>
+                            <td class="px-6 py-4 text-xs font-medium text-gray-500 dark:text-gray-400">@freelancerName</td>
+                            <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">₺@project.Budget.ToString("N0")</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-black @statusColor">@project.Status</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <form method="post" asp-page-handler="DeleteProject" class="inline" onsubmit="return confirm('⚠️ Bu projeyi silmek istediğinize emin misiniz?')">
+                                    <input type="hidden" name="projectId" value="@project.Id" />
+                                    <button type="submit" class="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg hover:bg-red-100 dark:hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-400 transition-colors border border-gray-200 dark:border-white/10" title="Projeyi Sil">
+                                        🗑️
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- TAB 3: AKTİVİTE LOGLARI -->
+<div id="panel-logs" class="tab-panel hidden">
+    <div class="bg-white dark:bg-[#1E2330] rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/5 text-left text-xs font-black uppercase tracking-widest text-gray-500">
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-LogSort="@(Model.LogSort == "Date" ? "DateDesc" : "Date")" asp-route-ActiveTab="logs" class="block hover:text-blue-500 transition-colors">
+                                Tarih @(Model.LogSort == "Date" ? "↑" : Model.LogSort == "DateDesc" ? "↓" : "")
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">Kullanıcı</th>
+                        <th class="px-6 py-4">
+                            <a asp-page="/Admin" asp-route-LogSort="@(Model.LogSort == "Action" ? "ActionDesc" : "Action")" asp-route-ActiveTab="logs" class="block hover:text-blue-500 transition-colors">
+                                Aksiyon
+                            </a>
+                        </th>
+                        <th class="px-6 py-4">Detay</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+                    @foreach (var log in Model.RecentLogs)
+                    {
+                        var logUserName = Model.UserNames.ContainsKey(log.UserId) ? Model.UserNames[log.UserId] : $"#{log.UserId}";
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                            <td class="px-6 py-4 text-xs font-bold text-gray-400 whitespace-nowrap">@log.Timestamp.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td class="px-6 py-4 text-xs font-bold text-gray-700 dark:text-gray-300">@logUserName</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-black rounded-full">@log.Action</span>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500 dark:text-gray-400 max-w-md truncate">@log.Details</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- BAKİYE GÜNCELLEME MODAL -->
+<div id="balanceModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999] hidden items-center justify-center">
+    <div class="bg-white dark:bg-[#1E2330] p-8 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-md w-full mx-4">
+        <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2">💰 Bakiye Güncelle</h3>
+        <p id="balanceUserName" class="text-sm text-gray-500 dark:text-gray-400 mb-6 font-medium"></p>
+        <form method="post" asp-page-handler="UpdateBalance">
+            <input type="hidden" name="userId" id="balanceUserId" />
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Yeni Bakiye (₺)</label>
+                    <input type="number" name="newBalance" id="balanceInput" step="0.01" class="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" />
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-lg">
+                        Güncelle
+                    </button>
+                    <button type="button" onclick="closeBalanceModal()" class="px-6 py-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 transition-colors border border-gray-200 dark:border-gray-700">
+                        İptal
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Sayfa yüklendiğinde aktif tabı ayarla
+    document.addEventListener('DOMContentLoaded', function() {
+        showTab('@Model.ActiveTab');
+    });
+
+    // Tab Geçiş Sistemi
+    function showTab(tabName) {
+        // Tüm panelleri gizle
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+        // Tüm butonları pasif yap
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('text-blue-600', 'dark:text-blue-400', 'border-blue-600', 'dark:border-blue-400');
+            b.classList.add('text-gray-400', 'border-transparent');
+        });
+
+        // Seçilen paneli göster
+        const panel = document.getElementById('panel-' + tabName);
+        if (panel) {
+            panel.classList.remove('hidden');
+        }
+
+        // Seçilen butonu aktif yap
+        const btn = document.getElementById('tab-' + tabName);
+        if (btn) {
+            btn.classList.remove('text-gray-400', 'border-transparent');
+            btn.classList.add('text-blue-600', 'dark:text-blue-400', 'border-blue-600', 'dark:border-blue-400');
+        }
+    }
+
+    // Bakiye Modal
+    function openBalanceModal(userId, userName, currentBalance) {
+        document.getElementById('balanceUserId').value = userId;
+        document.getElementById('balanceUserName').textContent = userName + ' - Mevcut: ₺' + currentBalance.toLocaleString('tr-TR');
+        document.getElementById('balanceInput').value = currentBalance;
+        document.getElementById('balanceModal').classList.remove('hidden');
+        document.getElementById('balanceModal').classList.add('flex');
+    }
+
+    function closeBalanceModal() {
+        document.getElementById('balanceModal').classList.add('hidden');
+        document.getElementById('balanceModal').classList.remove('flex');
+    }
+
+    // Modal dışına tıklayınca kapat
+    document.getElementById('balanceModal').addEventListener('click', function(e) {
+        if (e.target === this) closeBalanceModal();
+    });
+</script>

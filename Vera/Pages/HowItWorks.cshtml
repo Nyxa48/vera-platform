@@ -1,0 +1,105 @@
+﻿@page
+@model Vera.Pages.HowItWorksModel
+@{
+    ViewData["Title"] = "Nasıl Çalışır?";
+}
+
+<div class="max-w-7xl mx-auto pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center space-y-4 mb-20">
+        <h1 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
+            Vera İle İşler <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 italic">Nasıl Yürür?</span>
+        </h1>
+        <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+            Mükemmel yeteneği bulmak veya hayalinizdeki işe başlamak hiç bu kadar kolay olmamıştı.
+        </p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-16">
+        
+        <div class="space-y-12">
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-black text-xs uppercase tracking-widest">
+                <span>🏢</span> İşverenler İçin
+            </div>
+            
+            <div class="space-y-10 relative">
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-pink-500 flex items-center justify-center font-black text-pink-500 text-xl shadow-lg shadow-pink-500/10 transition-transform group-hover:scale-110">1</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Ücretsiz İlan Verin</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">İhtiyacınız olan projeyi detaylarıyla anlatın. Saniyeler içinde ilanınız onaylansın ve yayına girsin.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-pink-500 flex items-center justify-center font-black text-pink-500 text-xl shadow-lg shadow-pink-500/10 transition-transform group-hover:scale-110">2</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Teklifleri İnceleyin</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Uzmanlardan gelen teklifleri, portfolyoları ve puanları karşılaştırın. En uygun adayı seçin.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-pink-500 flex items-center justify-center font-black text-pink-500 text-xl shadow-lg shadow-pink-500/10 transition-transform group-hover:scale-110">3</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Güvenle Ödeyin</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Ödemeniz Vera Havuz Hesabı'nda bekletilir. Siz işi onaylamadan para asla aktarılmaz.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6">
+                <a href="/PostJob" class="inline-flex items-center gap-2 text-pink-600 font-black hover:gap-4 transition-all">İş İlanı Vererek Başla →</a>
+            </div>
+        </div>
+
+        <div class="space-y-12">
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-black text-xs uppercase tracking-widest">
+                <span>💻</span> Freelancerlar İçin
+            </div>
+
+            <div class="space-y-10 relative">
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-blue-600 flex items-center justify-center font-black text-blue-600 text-xl shadow-lg shadow-blue-500/10 transition-transform group-hover:scale-110">1</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Profilinizi Oluşturun</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Yeteneklerinizi ve portfolyonuzu ekleyin. İşverenlerin dikkatini çekecek bir profil hazırlayın.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-blue-600 flex items-center justify-center font-black text-blue-600 text-xl shadow-lg shadow-blue-500/10 transition-transform group-hover:scale-110">2</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Teklif Gönderin</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Size uygun projeleri bulun ve profesyonel tekliflerinizi iletin. Hemen iletişime geçin.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 group">
+                    <div class="shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-[#1E2330] border-2 border-blue-600 flex items-center justify-center font-black text-blue-600 text-xl shadow-lg shadow-blue-500/10 transition-transform group-hover:scale-110">3</div>
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">Ödemenizi Alın</h3>
+                        <p class="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">İşi zamanında teslim edin, onay aldığınız anda paranız doğrudan hesabınıza aktarılsın.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <a href="/Projects" class="inline-flex items-center gap-2 text-blue-600 font-black hover:gap-4 transition-all">Projeleri Keşfetmeye Başla →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-28 bg-white dark:bg-[#1E2330] rounded-[3rem] p-10 md:p-16 border border-gray-100 dark:border-white/5 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 text-[15rem] opacity-5 select-none pointer-events-none">🛡️</div>
+        <div class="relative z-10 grid md:grid-cols-3 gap-12 items-center">
+            <div class="md:col-span-2 space-y-6">
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tighter">Paranız ve Emeğiniz <br /> Vera ile Güvende.</h2>
+                <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">Sistemimiz "Escrow" (Güvenli Havuz Hesabı) mantığıyla çalışır. İş bitmeden işveren parayı çekemez, iş onaylanmadan freelancer parayı alamaz. İki taraf da güvendedir.</p>
+            </div>
+            <div class="text-center md:text-right">
+                <button class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-10 py-4 rounded-2xl font-black shadow-xl transition-all hover:scale-105 active:scale-95">Güvenlik Merkezi</button>
+            </div>
+        </div>
+    </div>
+</div>

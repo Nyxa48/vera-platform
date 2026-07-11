@@ -1,0 +1,174 @@
+@page
+@model Vera.Pages.FreelancersModel
+@{
+    ViewData["Title"] = "Uzmanları Keşfet";
+}
+
+@{
+    // Tutarlı renk sistemi — UserId'ye göre her zaman aynı rengi alır
+    var avatarGradients = new[] {
+        "from-blue-500 to-indigo-600",
+        "from-emerald-500 to-teal-600",
+        "from-orange-500 to-red-500",
+        "from-violet-500 to-purple-600",
+        "from-pink-500 to-rose-600",
+        "from-cyan-500 to-blue-600",
+        "from-amber-500 to-orange-600",
+        "from-fuchsia-500 to-pink-600"
+    };
+}
+
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    
+    @* ARAMA BÖLÜMÜ *@
+    <div class="bg-white dark:bg-[#1E2330] p-4 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm mb-8">
+        <form method="get" class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1 relative">
+                <svg class="w-6 h-6 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input asp-for="Search" type="text" placeholder="İsim, ünvan veya yetenek ara... (Örn: React, Flutter, Tasarım)" class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+            </div>
+            <button type="submit" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/30 transition-all active:scale-95 shrink-0">
+                Arama Yap
+            </button>
+        </form>
+    </div>
+
+    @* SONUÇ BAŞLIĞI *@
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                @if (!string.IsNullOrWhiteSpace(Model.Search))
+                {
+                    <span>"@Model.Search" <span class="text-gray-400 font-bold">için sonuçlar</span></span>
+                }
+                else
+                {
+                    <span>Uzmanları ve Şirketleri Keşfet 🔍</span>
+                }
+            </h1>
+            <p class="text-sm text-gray-500 font-medium mt-1">@Model.FreelancerList.Count kişi/şirket bulundu</p>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Search))
+        {
+            <a href="/Freelancers" class="px-6 py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 font-bold rounded-xl transition-all text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                Filtreyi Temizle
+            </a>
+        }
+    </div>
+
+    @* FREELANCER KARTLARI *@
+    @if (Model.FreelancerList.Any())
+    {
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var freelancer in Model.FreelancerList)
+            {
+                var colorIndex = freelancer.Id % avatarGradients.Length;
+                var completedCount = Model.CompletedProjectCounts.ContainsKey(freelancer.Id) ? Model.CompletedProjectCounts[freelancer.Id] : 0;
+                var activeCount = Model.ActiveProjectCounts.ContainsKey(freelancer.Id) ? Model.ActiveProjectCounts[freelancer.Id] : 0;
+                var initials = freelancer.FullName.Length >= 2 ? freelancer.FullName.Substring(0, 2).ToUpper() : freelancer.FullName.Substring(0, 1).ToUpper();
+
+                <a href="/FreelancerDetail?id=@freelancer.Id" class="bg-white dark:bg-[#1E2330] p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-500/20 transition-all group relative block">
+                    
+                    @* ÜST KISIM: Avatar + Puan *@
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="relative">
+                            <div class="w-16 h-16 bg-gradient-to-br @avatarGradients[colorIndex] rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg">
+                                @initials
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-3 border-white dark:border-[#1E2330] rounded-full"></div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-yellow-500 font-black flex items-center justify-end gap-1 text-sm">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                4.9
+                            </p>
+                            @if (completedCount > 0)
+                            {
+                                <p class="text-[10px] font-black text-green-500 uppercase tracking-widest mt-1">@completedCount İş Tamamladı</p>
+                            }
+                            else if (activeCount > 0)
+                            {
+                                <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mt-1">@activeCount Aktif İş</p>
+                            }
+                            else
+                            {
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Yeni Üye</p>
+                            }
+                        </div>
+                    </div>
+
+                    @* İSİM VE ÜNVAN *@
+                    <div class="space-y-1 mb-4">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">@freelancer.FullName</h3>
+                            @if (freelancer.Role == "Employer")
+                            {
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 text-[10px] font-black rounded uppercase tracking-widest">Şirket</span>
+                            }
+                        </div>
+                        <p class="text-sm font-bold text-blue-600 dark:text-blue-400">
+                            @(string.IsNullOrEmpty(freelancer.Title) ? (freelancer.Role == "Employer" ? "İşveren / Şirket" : "Freelancer Uzman") : freelancer.Title)
+                        </p>
+                    </div>
+
+                    @* HAKKINDA ÖNİZLEME *@
+                    @if (!string.IsNullOrEmpty(freelancer.About))
+                    {
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mb-5 line-clamp-2">@freelancer.About</p>
+                    }
+
+                    @* YETENEKLER — "Toplam Kazanç" yerine *@
+                    @if (!string.IsNullOrEmpty(freelancer.Skills))
+                    {
+                        <div class="flex flex-wrap gap-1.5 mb-6">
+                            @foreach (var skill in freelancer.Skills.Split(',').Take(4))
+                            {
+                                <span class="px-2.5 py-1 bg-gray-50 dark:bg-white/5 text-[11px] font-bold text-gray-600 dark:text-gray-400 rounded-lg border border-gray-100 dark:border-white/5">@skill.Trim()</span>
+                            }
+                            @{
+                                var totalSkills = freelancer.Skills.Split(',').Length;
+                            }
+                            @if (totalSkills > 4)
+                            {
+                                <span class="px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-[11px] font-bold text-blue-600 dark:text-blue-400 rounded-lg">+@(totalSkills - 4)</span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-6"></div>
+                    }
+
+                    @* ALT İSTATİSTİKLER *@
+                    <div class="flex justify-between items-end border-t border-gray-100 dark:border-white/5 pt-5">
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Üyelik</p>
+                            <p class="text-sm font-black text-gray-900 dark:text-white">@freelancer.CreatedAt.ToString("MMM yyyy")</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Durum</p>
+                            @if (activeCount > 0)
+                            {
+                                <p class="text-sm font-black text-blue-600">🔵 @(freelancer.Role == "Employer" ? "İlanı Var" : "Çalışıyor")</p>
+                            }
+                            else
+                            {
+                                <p class="text-sm font-black text-green-600">🟢 @(freelancer.Role == "Employer" ? "İlan Yok" : "Müsait")</p>
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-16 border border-gray-100 dark:border-white/5 shadow-sm text-center">
+            <div class="w-24 h-24 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mx-auto mb-6 text-5xl">🔍</div>
+            <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">Uzman Bulunamadı</h3>
+            <p class="text-gray-500 font-medium mb-6">Arama kriterlerinize uygun freelancer bulunamadı.</p>
+            <a href="/Freelancers" class="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg transition-all">Tüm Uzmanları Göster</a>
+        </div>
+    }
+</div>

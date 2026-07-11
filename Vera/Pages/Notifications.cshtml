@@ -1,0 +1,167 @@
+@page
+@model Vera.Pages.NotificationsModel
+@{
+    ViewData["Title"] = "Bildirimler";
+    Layout = "_AppLayout";
+}
+
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="bg-white dark:bg-[#1E2330] p-6 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                <span>🔔</span> Bildirim Merkezi
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Hesap hareketlerini ara ve filtrele.
+                @if (Model.TotalCount > 0)
+                {
+                    <span class="text-blue-600 font-bold">(@Model.TotalCount bildirim)</span>
+                }
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="relative w-full md:w-64">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+                <input type="text" id="searchInput" placeholder="Bildirimlerde ara..." class="w-full bg-gray-50 dark:bg-[#151923] border border-gray-200 dark:border-gray-700 text-sm rounded-xl pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white transition-all">
+            </div>
+
+            <button id="sortBtn" class="flex items-center gap-2 bg-gray-50 dark:bg-[#151923] border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap">
+                <span id="sortIcon">⬇️</span> <span id="sortText">En Yeni</span>
+            </button>
+
+            @if (Model.Logs != null && Model.Logs.Any())
+            {
+                <form method="post" asp-page-handler="ClearAll">
+                    <button type="submit" onclick="return confirm('Tüm bildirimleri silmek istediğine emin misin?')" class="flex items-center gap-2 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 px-4 py-2.5 rounded-xl text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Temizle
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <div id="notificationsContainer" class="bg-white dark:bg-[#1E2330] rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        @if (Model.Logs != null && Model.Logs.Any())
+        {
+            <div class="divide-y divide-gray-100 dark:divide-white/5" id="notificationsList">
+                @foreach (var log in Model.Logs)
+                {
+                    var searchText = $"{log.Action} {log.Details}".ToLower();
+                    var isPayment = log.Action.Contains("Ödeme") || log.Action.Contains("Hesaba Geçti");
+                    var isAccepted = log.Action.Contains("Kabul") || log.Action.Contains("Teklif");
+                    var isSystem = log.Action.Contains("Sistem") || log.Action.Contains("Güncelleme");
+
+                    // İkon ve renk seçimi
+                    var iconBg = isPayment ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500" :
+                                 isAccepted ? "bg-blue-50 dark:bg-blue-500/10 text-blue-500" :
+                                 isSystem ? "bg-purple-50 dark:bg-purple-500/10 text-purple-500" :
+                                 "bg-orange-50 dark:bg-orange-500/10 text-orange-500";
+                    var icon = isPayment ? "💸" : isAccepted ? "🎉" : isSystem ? "⚙️" : "📝";
+
+                    var isNew = (DateTime.Now - log.Timestamp).TotalHours < 24;
+
+                    <div class="notification-item p-6 flex items-start gap-4 hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-all group border-l-4 @(isNew ? "border-blue-500" : "border-transparent") relative"
+                         data-timestamp="@log.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss")"
+                         data-search="@searchText">
+                        
+                        @if (isNew)
+                        {
+                            <span class="absolute top-6 left-[-6px] w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-[#1E2330]"></span>
+                        }
+
+                        <div class="w-12 h-12 rounded-2xl @iconBg flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
+                            @icon
+                        </div>
+
+                        <div class="flex-grow min-w-0">
+                            <div class="flex items-center justify-between mb-1 gap-2">
+                                <h3 class="text-base font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate">@log.Action</h3>
+                                <span class="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-xl shrink-0">@log.Timestamp.ToString("dd MMM yyyy, HH:mm")</span>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">@log.Details</p>
+                        </div>
+
+                        @* SİLME BUTONU *@
+                        <form method="post" asp-page-handler="Delete" asp-route-logId="@log.Id" class="shrink-0 self-center">
+                            <button type="submit" class="p-2 rounded-xl text-gray-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100" title="Bildirimi Sil">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            <div id="noResults" class="hidden p-12 text-center">
+                <span class="text-5xl block mb-4">🕵️‍♂️</span>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Sonuç bulunamadı</h3>
+                <p class="text-gray-500 text-sm">Farklı kelimelerle tekrar aramayı dene.</p>
+            </div>
+        }
+        else
+        {
+            <div class="p-16 text-center">
+                <span class="text-6xl block mb-4 opacity-50">📭</span>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Henüz bildirim yok</h3>
+                <p class="text-gray-500 text-sm">Hesabında yeni bir hareket olduğunda burada görünecek.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // ARAMA VE SIRALAMA (Sayfayı yenilemeden çalışan Javascript Şovu)
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const sortBtn = document.getElementById('sortBtn');
+        const sortIcon = document.getElementById('sortIcon');
+        const sortText = document.getElementById('sortText');
+        const notificationsList = document.getElementById('notificationsList');
+        const noResults = document.getElementById('noResults');
+
+        if (!notificationsList) return;
+
+        let isDescending = true;
+
+        // 1. Arama (Search) Fonksiyonu
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.notification-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const searchText = item.getAttribute('data-search');
+                if (searchText.includes(term)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) noResults.classList.remove('hidden');
+            else noResults.classList.add('hidden');
+        });
+
+        // 2. Sıralama (Sort) Fonksiyonu
+        sortBtn.addEventListener('click', function() {
+            isDescending = !isDescending;
+            const items = Array.from(document.querySelectorAll('.notification-item'));
+
+            items.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-timestamp'));
+                const dateB = new Date(b.getAttribute('data-timestamp'));
+                return isDescending ? dateB - dateA : dateA - dateB;
+            });
+
+            items.forEach(item => notificationsList.appendChild(item));
+
+            if (isDescending) {
+                sortIcon.textContent = '⬇️'; sortText.textContent = 'En Yeni';
+            } else {
+                sortIcon.textContent = '⬆️'; sortText.textContent = 'En Eski';
+            }
+        });
+    });
+</script>

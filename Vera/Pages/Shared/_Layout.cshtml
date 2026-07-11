@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="tr" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Vera</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="~/vera_vertical.ico">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+        font-family: 'Inter', sans-serif;
+        }
+        
+        .mega-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .group:hover .mega-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        }
+
+        .btn-shine {
+        position: relative;
+        overflow: hidden;
+        }
+
+        .btn-shine::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.13);
+        transform: rotate(35deg);
+        transition: all 0.5s;
+        opacity: 0;
+        }
+
+        .btn-shine:hover::after {
+        left: 120%;
+        opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-500 min-h-screen flex flex-col">
+
+    <header class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+        <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-[#1E2330]/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    
+                    <div class="flex items-center gap-8">
+                        <a asp-page="/Index" class="flex-shrink-0 flex items-center gap-2 group mt-1">
+                            <img src="~/veraa.png" alt="Vera Logo" class="h-18 md:h-16 w-auto group-hover:scale-105 transition-transform duration-300 drop-shadow-md" />
+                        </a>
+
+                        <div class="hidden md:flex items-center space-x-1">
+                            <div class="relative group">
+                                <button class="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-xl group-hover:bg-gray-50 dark:group-hover:bg-white/5">
+                                    Çözümler
+                                    <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+
+                                <div class="absolute top-full left-0 mt-2 w-[800px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left -translate-y-2 group-hover:translate-y-0">
+                                    <div class="bg-white dark:bg-[#1E2330] rounded-3xl shadow-2xl dark:shadow-blue-900/20 border border-gray-100 dark:border-gray-700 overflow-hidden">
+                                        <div class="grid grid-cols-3 p-4">
+                                            
+                                            <div class="p-4 space-y-4">
+                                                <h3 class="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest pl-3">Yazılım</h3>
+                                                <ul class="space-y-1">
+                                                    <li>
+                                                        <a href="/Projects" class="group/link flex items-start gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-[#151923] transition-colors">
+                                                            <div class="text-2xl mt-0.5">💻</div>
+                                                            <div>
+                                                                <div class="text-sm font-bold text-gray-900 dark:text-white group-hover/link:text-blue-600 transition-colors">Web Geliştirme</div>
+                                                                <div class="text-xs text-gray-500 mt-0.5">Modern web siteleri ve web uygulamaları.</div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/Projects" class="group/link flex items-start gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-[#151923] transition-colors">
+                                                            <div class="text-2xl mt-0.5">📱</div>
+                                                            <div>
+                                                                <div class="text-sm font-bold text-gray-900 dark:text-white group-hover/link:text-blue-600 transition-colors">Mobil Uygulama</div>
+                                                                <div class="text-xs text-gray-500 mt-0.5">iOS ve Android için native çözümler.</div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="p-4 space-y-4 border-l border-gray-50 dark:border-gray-800/50">
+                                                <h3 class="text-[11px] font-black text-pink-600 dark:text-pink-400 uppercase tracking-widest pl-3">Tasarım</h3>
+                                                <ul class="space-y-1">
+                                                    <li>
+                                                        <a href="/Projects" class="group/link flex items-start gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-[#151923] transition-colors">
+                                                            <div class="text-2xl mt-0.5">🎨</div>
+                                                            <div>
+                                                                <div class="text-sm font-bold text-gray-900 dark:text-white group-hover/link:text-pink-600 transition-colors">UI/UX Tasarım</div>
+                                                                <div class="text-xs text-gray-500 mt-0.5">Kullanıcı deneyimi odaklı arayüzler.</div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/Projects" class="group/link flex items-start gap-3 p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-[#151923] transition-colors">
+                                                            <div class="text-2xl mt-0.5">✨</div>
+                                                            <div>
+                                                                <div class="text-sm font-bold text-gray-900 dark:text-white group-hover/link:text-pink-600 transition-colors">Logo & Marka</div>
+                                                                <div class="text-xs text-gray-500 mt-0.5">Kurumsal kimlik ve kreatif logolar.</div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="p-2">
+                                                <div class="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/10 rounded-2xl p-6 border border-blue-100 dark:border-blue-800/30 relative overflow-hidden group/card">
+                                                    <div class="absolute -bottom-8 -right-8 text-8xl opacity-10 group-hover/card:scale-110 group-hover/card:-rotate-12 transition-transform duration-500">🚀</div>
+                                                    <div class="relative z-10 flex flex-col h-full justify-between">
+                                                        <div>
+                                                            <span class="inline-block px-2.5 py-1 bg-blue-600 text-white text-[10px] font-black rounded-full uppercase tracking-wider mb-4 shadow-sm shadow-blue-500/30">Yeni</span>
+                                                            <h4 class="text-lg font-black text-gray-900 dark:text-white leading-tight mb-2">Freelance İş Takip v2.0</h4>
+                                                            <p class="text-xs text-gray-600 dark:text-gray-400 font-medium">Tüm faturalandırma ve zaman takibi süreçlerinizi tek tıkla yönetin.</p>
+                                                        </div>
+                                                        <a href="/Dashboard" class="mt-6 inline-flex items-center text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                                                            Hemen İncele <span class="ml-1 text-lg leading-none group-hover/card:translate-x-1 transition-transform">→</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <a href="/Projects" class="px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-xl hover:bg-gray-50 dark:hover:bg-white/5">Projeler</a>
+                            <a href="/Freelancers" class="px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-xl hover:bg-gray-50 dark:hover:bg-white/5">Uzmanlar</a>
+                            <a href="/HowItWorks" class="px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-xl hover:bg-gray-50 dark:hover:bg-white/5">Nasıl Çalışır?</a>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 md:gap-4">
+                        <button id="theme-toggle" class="p-2 rounded-xl text-gray-500 hover:text-yellow-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors">
+                            <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                            <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        </button>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="relative group hidden md:block">
+                                <button class="flex items-center gap-2 px-3 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-xl">
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xs shadow-md">
+                                        @User.Identity.Name.Substring(0, 1).ToUpper()
+                                    </div>
+                                    @User.Identity.Name
+                                    <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+
+                                <div class="absolute right-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right -translate-y-2 group-hover:translate-y-0 z-50">
+                                    <div class="bg-white dark:bg-[#1E2330] rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden py-2">
+                                        <div class="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-2">
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Giriş yapıldı:</p>
+                                            <p class="text-sm font-black text-gray-900 dark:text-white truncate">@User.Identity.Name</p>
+                                        </div>
+                                        <a href="/Dashboard" class="flex items-center gap-3 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                            <span>📊</span> Kontrol Paneli
+                                        </a>
+                                        <a href="/Settings" class="flex items-center gap-3 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                            <span>⚙️</span> Ayarlar
+                                        </a>
+                                        <a href="/Notifications" class="flex items-center gap-3 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                            <span>🔔</span> Bildirimler
+                                        </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a href="/Admin" class="flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors">
+                                                <span>🛡️</span> Admin Paneli
+                                            </a>
+                                        }
+                                        <div class="h-px bg-gray-100 dark:bg-white/5 my-2"></div>
+                                        <form method="post" asp-page="/Logout" class="m-0">
+                                            <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left">
+                                                <span>🚪</span> Çıkış Yap
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!User.IsInRole("Freelancer"))
+                            {
+                                <a href="/PostJob" class="hidden md:flex px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-pink-500/30 transition-all hover:-translate-y-0.5 items-center gap-2">
+                                    <span class="text-lg leading-none">+</span> İş İlanı Ver
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <a href="/Login" class="hidden md:block text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-2 transition-colors">
+                                Giriş Yap
+                            </a>
+                            <a href="/PostJob" class="px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-pink-500/30 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                                <span class="text-lg leading-none">+</span> İş İlanı Ver
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-20 pb-12">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
+                
+                <div class="col-span-2 md:col-span-1">
+                    <a asp-page="/Index" class="flex items-center gap-2 mb-4 group">
+                        <img src="~/veraa.png" alt="Vera Logo" class="h-14 md:h-16 w-auto grayscale group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100" />
+                    </a>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3 text-sm hover:text-white cursor-pointer transition">
+                            <span class="text-lg">🌐</span> Turkey / Türkçe
+                        </div>
+                        <a href="/Contact" class="flex items-center gap-3 text-sm hover:text-white cursor-pointer transition">
+                            <span class="text-lg">❓</span> Yardım Merkezi
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-xs tracking-[0.2em] opacity-50">FREELANCER</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="/Projects" class="text-gray-400 hover:text-blue-400 hover:translate-x-1 inline-block transition-all">Projeleri Keşfet</a></li>
+                        <li><a href="/Register" class="text-gray-400 hover:text-blue-400 hover:translate-x-1 inline-block transition-all">Freelancer Olarak Katıl</a></li>
+                        <li><a href="/Login" class="text-gray-400 hover:text-blue-400 hover:translate-x-1 inline-block transition-all">Giriş Yap</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-xs tracking-[0.2em] opacity-50">İŞVEREN</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="/Freelancers" class="text-gray-400 hover:text-pink-400 hover:translate-x-1 inline-block transition-all">Uzmanları Keşfet</a></li>
+                        <li><a href="/PostJob" class="text-gray-400 hover:text-pink-400 hover:translate-x-1 inline-block transition-all">İş İlanı Ver</a></li>
+                        <li><a href="/Register" class="text-gray-400 hover:text-pink-400 hover:translate-x-1 inline-block transition-all">İşveren Olarak Katıl</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 text-xs tracking-[0.2em] opacity-50">ŞİRKET</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="/About" class="text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all">Hakkımızda</a></li>
+                        <li><a href="/Contact" class="text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all">İletişim</a></li>
+                        <li><a href="/Privacy" class="text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all">Gizlilik Politikası</a></li>
+                        <li><a href="/Terms" class="text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all">Kullanım Şartları</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="text-white font-bold mb-6 text-xs tracking-[0.2em] opacity-50">MOBİL UYGULAMA</h4>
+                    <div class="space-y-3">
+                        <button onclick="alert('iOS Uygulamamız çok yakında App Store\'da!')" class="w-full flex items-center justify-center gap-2 bg-[#1E2330] hover:bg-white hover:text-gray-900 text-gray-300 border border-gray-700 hover:border-white py-3 rounded-xl text-xs font-bold transition-all duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.04 2.26-.79 3.59-.76 1.54.04 2.87.72 3.61 1.83-3.06 1.73-2.58 5.72.39 6.84-1.24 2.65-2.3 4.19-2.67 4.26zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"></path></svg>
+                            App Store
+                        </button>
+                        <button onclick="alert('Android Uygulamamız çok yakında Google Play\'de!')" class="w-full flex items-center justify-center gap-2 bg-[#1E2330] hover:bg-white hover:text-gray-900 text-gray-300 border border-gray-700 hover:border-white py-3 rounded-xl text-xs font-bold transition-all duration-300">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186c-.165-.133-.314-.3-.435-.503A2.883 2.883 0 013 20.218V3.782c0-.53.059-.996.175-1.465.121-.202.27-.37.434-.503zM14.613 12.82l2.676 2.675L4.992 22.588l9.621-9.768zM20.638 8.441L15.42 11.45 18.1 14.13l2.538-1.455c.783-.448 1.174-1.06 1.174-1.838 0-.777-.391-1.39-1.174-1.838zM4.992 1.412l12.297 7.086L14.613 11.18 4.992 1.412z"></path></svg>
+                            Google Play
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center text-[11px] text-gray-500 uppercase tracking-widest">
+                <div class="flex gap-8 mb-4 md:mb-0">
+                    <span>Kayıtlı Uzman: 12,450</span>
+                    <span>Tamamlanan İş: 3,210</span>
+                </div>
+                <p>&copy; 2026 Vera Freelance Tech. Tüm Hakları Saklıdır.</p>
+            </div>
+
+        </div>
+    </footer>
+
+    <button id="backToTop" class="fixed bottom-8 right-8 z-50 p-4 rounded-full bg-blue-600 text-white shadow-2xl shadow-blue-500/40 opacity-0 translate-y-10 invisible transition-all duration-500 hover:bg-blue-700 hover:-translate-y-1 active:scale-90 group">
+        <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <script>
+        const backToTopBtn = document.getElementById('backToTop');
+        window.onscroll = function() {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+        backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'invisible');
+        backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'visible');
+        } else {
+        backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'visible');
+        backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'invisible');
+        }
+        };
+
+        backToTopBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        htmlElement.classList.add('dark');
+        themeToggleLightIcon.classList.remove('hidden');
+        } else {
+        htmlElement.classList.remove('dark');
+        themeToggleDarkIcon.classList.remove('hidden');
+        }
+    
+        themeToggleBtn.addEventListener('click', function() {
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+        htmlElement.classList.toggle('dark');
+            
+        if (htmlElement.classList.contains('dark')) {
+        localStorage.setItem('theme', 'dark');
+        } else {
+        localStorage.setItem('theme', 'light');
+        }
+        });
+    </script>
+</body>
+</html>

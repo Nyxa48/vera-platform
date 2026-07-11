@@ -1,0 +1,176 @@
+@page
+@model Vera.Pages.PostJobModel
+@{
+    ViewData["Title"] = "İş İlanı Ver";
+    Layout = "_AppLayout";
+}
+
+<div class="max-w-5xl mx-auto py-12 px-4 sm:px-6">
+    <div class="space-y-10">
+        
+        <div class="space-y-4">
+            <h1 class="text-5xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-[1.1]">
+                Ne yaptırmak <br class="hidden md:block" />
+                istediğinizi <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 italic">söyleyin.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-500 dark:text-gray-400 font-medium">Mükemmel uzmanı bulmanız için size rehberlik edeceğiz.</p>
+        </div>
+
+        @* Bakiye Durumu Banner *@
+        @if (Model.CurrentUser != null)
+        {
+            if (Model.CurrentUser.WalletBalance < 0)
+            {
+                <div class="p-6 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-3xl flex items-start gap-4">
+                    <span class="text-3xl">🚫</span>
+                    <div>
+                        <h3 class="font-black text-red-700 dark:text-red-400 text-lg">İlan Yayınlayamazsınız</h3>
+                        <p class="text-red-600 dark:text-red-400 text-sm font-medium mt-1">Hesabınızın bakiyesi <strong>₺@Math.Abs(Model.CurrentUser.WalletBalance).ToString("N0") eksi</strong> durumda. Lütfen önce <a href="/Wallet" class="underline font-bold">Cüzdanınıza bakiye ekleyin</a>.</p>
+                    </div>
+                </div>
+            }
+            else if (Model.CurrentUser.WalletBalance < 5000)
+            {
+                <div class="p-5 bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 rounded-3xl flex items-center gap-3">
+                    <span class="text-2xl">⚠️</span>
+                    <p class="text-yellow-700 dark:text-yellow-300 text-sm font-bold">Bakiyeniz düşük (₺@Model.CurrentUser.WalletBalance.ToString("N0")). Yayınlanan ilanın bütçesi cüzdanınızdan rezerve edilecektir.</p>
+                </div>
+            }
+            else
+            {
+                <div class="p-5 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-3xl flex items-center gap-3">
+                    <span class="text-2xl">✅</span>
+                    <p class="text-green-700 dark:text-green-400 text-sm font-bold">Kullanılabilir bakiyeniz: <strong>₺@Model.CurrentUser.WalletBalance.ToString("N0")</strong>. İlanı yayınladığınızda bütçe tutarı rezerve edilecek.</p>
+                </div>
+            }
+        }
+
+        @* Hata Mesajı *@
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="p-5 bg-red-50 dark:bg-red-500/10 border border-red-300 dark:border-red-500/30 text-red-700 dark:text-red-400 rounded-2xl font-bold text-sm">
+                🚫 @Model.ErrorMessage
+            </div>
+        }
+
+        <form method="post" class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] shadow-2xl dark:shadow-blue-900/10 border border-gray-100 dark:border-white/[0.05] p-6 md:p-10 space-y-8">
+            
+            @* 1. BÖLÜM: TEMEL BİLGİLER *@
+            <div>
+                <h2 class="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center text-sm font-black">1</span>
+                    Temel Bilgiler
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Proje Başlığı</label>
+                        <input asp-for="NewProject.Title" type="text" placeholder="Örn: E-ticaret sitemiz için modern arayüz tasarımı" required class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Kategori</label>
+                        <select name="NewProject.Tags" class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none">
+                            <option value="">Kategori Seçin...</option>
+                            <option value="Web Programlama">Web Programlama (Frontend / Backend)</option>
+                            <option value="Mobil Uygulama">Mobil Uygulama Geliştirme (iOS / Android)</option>
+                            <option value="Tasarım,UI/UX">Tasarım & UI/UX</option>
+                            <option value="Veri Bilimi">Veri Bilimi & Analiz</option>
+                            <option value="Yapay Zeka">Yapay Zeka & Makine Öğrenimi</option>
+                            <option value="Oyun Geliştirme">Oyun Geliştirme</option>
+                            <option value="SEO,Dijital Pazarlama">SEO & Dijital Pazarlama</option>
+                            <option value="Video,Animasyon">Video Kurgu & Animasyon</option>
+                            <option value="İçerik Yazarlığı">Metin Yazarlığı & Çeviri</option>
+                            <option value="DevOps,Sunucu">Sunucu Yönetimi & DevOps</option>
+                            <option value="Siber Güvenlik">Siber Güvenlik</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Gerekli Uzman Seviyesi</label>
+                        <select asp-for="NewProject.RequiredLevel" class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none">
+                            <option value="">Seviye Seçin...</option>
+                            <option value="Giriş">🟢 Giriş Seviyesi (Junior)</option>
+                            <option value="Orta">🟡 Orta Seviye (Mid-Level)</option>
+                            <option value="Uzman">🔴 Uzman Seviyesi (Senior / Expert)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 dark:border-white/5 pt-8">
+                <h2 class="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm font-black">2</span>
+                    Proje Detayları
+                </h2>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-end pl-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Proje Açıklaması</label>
+                        <span class="text-xs text-gray-400 font-medium">Minimum 50 karakter</span>
+                    </div>
+                    <textarea asp-for="NewProject.Description" rows="7" placeholder="İhtiyaçlarınızı, beklentilerinizi ve projenin amacını detaylıca anlatın. Ne kadar detaylı olursa, o kadar uygun uzman başvurur..." required class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-3xl px-6 py-5 text-base font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all resize-none"></textarea>
+                </div>
+            </div>
+
+            @* 3. BÖLÜM: BÜTÇE & TARİH *@
+            <div class="border-t border-gray-100 dark:border-white/5 pt-8">
+                <h2 class="text-lg font-black text-gray-900 dark:text-white mb-5 flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center text-sm font-black">3</span>
+                    Bütçe & Zaman Çerçevesi
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gray-50 dark:bg-[#151A23] rounded-3xl border border-gray-100 dark:border-white/5">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Bütçe Tipi</label>
+                        <div class="flex gap-3">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" asp-for="NewProject.IsHourly" value="false" class="peer sr-only" checked>
+                                <div class="px-4 py-3 rounded-xl border-2 border-transparent peer-checked:border-pink-500 peer-checked:bg-pink-50 dark:peer-checked:bg-pink-500/10 bg-white dark:bg-[#1E2330] text-center font-bold text-sm text-gray-600 dark:text-gray-300 peer-checked:text-pink-600 dark:peer-checked:text-pink-400 transition-all shadow-sm">Sabit</div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" asp-for="NewProject.IsHourly" value="true" class="peer sr-only">
+                                <div class="px-4 py-3 rounded-xl border-2 border-transparent peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-500/10 bg-white dark:bg-[#1E2330] text-center font-bold text-sm text-gray-600 dark:text-gray-300 peer-checked:text-blue-600 dark:peer-checked:text-blue-400 transition-all shadow-sm">Saatlik</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Tahmini Bütçe (₺)</label>
+                        <div class="relative">
+                            <span class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₺</span>
+                            <input asp-for="NewProject.Budget" type="number" step="100" min="100" placeholder="5.000" required class="w-full bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 rounded-2xl pl-10 pr-5 py-3.5 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all shadow-sm" />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Son Başvuru Tarihi</label>
+                        <input asp-for="NewProject.Deadline" type="date" class="w-full bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all shadow-sm" />
+                    </div>
+                </div>
+            </div>
+
+            @* ÖZET PANEL *@
+            <div class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-500/5 dark:to-purple-500/5 rounded-3xl p-6 border border-pink-100 dark:border-pink-500/10">
+                <h3 class="text-sm font-black text-gray-700 dark:text-gray-300 mb-4">💡 Bütçe Rezervasyonu Hakkında</h3>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed">İlanı yayınladığınızda, belirlediğiniz bütçe tutarı cüzdanınızdan <strong class="text-gray-700 dark:text-gray-300">otomatik olarak rezerve edilecektir</strong>. Proje tamamlandığında tutar uzmana aktarılır; iptal edilirse iade edilir.</p>
+            </div>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-gray-100 dark:border-white/5">
+                <a href="/Dashboard" class="text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">← Dashboard'a Dön</a>
+                <button type="submit" @(Model.CurrentUser != null && Model.CurrentUser.WalletBalance < 0 ? "disabled" : "") class="w-full sm:w-auto bg-gradient-to-r from-pink-600 to-purple-600 text-white px-12 py-4 rounded-2xl font-bold hover:scale-[1.02] shadow-xl shadow-pink-500/30 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                    İlanı Yayınla <span class="text-xl leading-none">→</span>
+                </button>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+            <div class="flex items-center gap-4 bg-white dark:bg-[#1E2330] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <span class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-500/10 text-green-600 flex items-center justify-center text-lg font-black">✓</span>
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Verified Profesyoneller</span>
+            </div>
+            <div class="flex items-center gap-4 bg-white dark:bg-[#1E2330] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <span class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center text-lg font-black">⚡</span>
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Hızlı Eşleşme Sistemi</span>
+            </div>
+            <div class="flex items-center gap-4 bg-white dark:bg-[#1E2330] p-4 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
+                <span class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-600 flex items-center justify-center text-lg font-black">🛡️</span>
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">Escrow ile Güvenli Ödeme</span>
+            </div>
+        </div>
+        
+    </div>
+</div>

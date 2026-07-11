@@ -1,0 +1,117 @@
+﻿@page
+@model Vera.Pages.ProjectsModel
+@{
+    ViewData["Title"] = "Projeleri Keşfet";
+}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    
+    <div class="mb-10">
+        <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight">Projeleri Keşfet 🚀</h1>
+        <p class="text-lg text-gray-500 dark:text-gray-400 mt-2 font-medium">Yeteneklerinize en uygun ilanları bulun ve hemen teklif verin.</p>
+    </div>
+
+    <form method="get" id="filterForm">
+        <div class="flex flex-col lg:flex-row gap-10">
+            
+            <aside class="w-full lg:w-72 shrink-0 space-y-8">
+                <div class="relative group">
+                    <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" asp-for="Search" placeholder="Anahtar kelime..." class="w-full bg-white dark:bg-[#1E2330] border border-gray-200 dark:border-white/10 rounded-2xl pl-12 pr-4 py-3 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-all" onchange="this.form.submit()" />
+                </div>
+
+                <div class="bg-white dark:bg-[#1E2330] p-6 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest text-blue-500">Proje Tipi</h4>
+                        <div class="space-y-3">
+                            <label class="flex-1 cursor-pointer">
+                                <select asp-for="Type" onchange="this.form.submit()" class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 focus:outline-none">
+                                    <option value="">Tüm Tipler</option>
+                                    <option value="fixed">Sabit Bütçeli</option>
+                                    <option value="hourly">Saatlik Ücret</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100 dark:border-white/5 space-y-4">
+                        <h4 class="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest text-pink-500">Sıralama</h4>
+                        <select asp-for="Sort" onchange="this.form.submit()" class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold rounded-xl px-4 py-2.5 focus:outline-none">
+                            <option value="newest">En Yeniler</option>
+                            <option value="price_desc">Bütçe (En Yüksek)</option>
+                            <option value="price_asc">Bütçe (En Düşük)</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="flex-1 space-y-6">
+                <div class="flex justify-between items-center bg-white dark:bg-[#1E2330] p-4 px-6 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+                    <p class="text-sm font-bold text-gray-900 dark:text-white">Şu anda <span class="font-black text-lg text-blue-600">@Model.ProjectList.Count</span> iş ilanı gösteriliyor</p>
+                    <button type="submit" class="text-[10px] font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-lg uppercase hover:bg-blue-600 hover:text-white transition-all">Filtreleri Uygula</button>
+                </div>
+
+                <div class="space-y-6">
+                    @foreach (var project in Model.ProjectList)
+                    {
+                        <div class="bg-white dark:bg-[#1E2330] p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row justify-between gap-6 animate-in zoom-in-95 duration-500">
+                            <div class="flex-1 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    @if (project.IsHourly)
+                                    {
+                                        <span class="px-3 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-wider rounded-lg">Saatlik Ücret</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-wider rounded-lg">Sabit Fiyat</span>
+                                    }
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">@project.CreatedAt.ToString("dd MMM") tarihinde yayınlandı</span>
+                                </div>
+                                <a href="/ProjectDetail?id=@project.Id" class="block">
+                                    <h3 class="text-2xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors uppercase tracking-tighter">@project.Title</h3>
+                                </a>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed font-medium line-clamp-2">@project.Description</p>
+                                
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1.5 bg-gray-50 dark:bg-white/5 text-xs font-bold text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-white/10 hover:border-blue-500 transition-colors">Yazılım</span>
+                                    <span class="px-3 py-1.5 bg-gray-50 dark:bg-white/5 text-xs font-bold text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-white/10 hover:border-blue-500 transition-colors">Uzaktan</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col items-start md:items-end justify-between border-t md:border-t-0 border-gray-100 dark:border-white/5 pt-6 md:pt-0 shrink-0 md:w-48">
+                                <div class="text-left md:text-right w-full mb-6 md:mb-0">
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Bütçe</p>
+                                    <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">₺@project.Budget.ToString("N0")@(project.IsHourly ? "/sa" : "")</p>
+                                </div>
+                                <a href="/ProjectDetail?id=@project.Id" class="w-full md:w-auto text-center px-8 py-3 @(project.IsHourly ? "bg-pink-600 hover:bg-pink-700 shadow-pink-500/20" : "bg-blue-600 hover:bg-blue-700 shadow-blue-500/20") text-white font-bold rounded-2xl shadow-lg transition-all hover:-translate-y-1 active:scale-95">
+                                    Detayları Gör
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="flex justify-center items-center gap-2 mt-12 pt-10 border-t border-gray-100 dark:border-white/5">
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <a href="?CurrentPage=@i&Search=@Model.Search&Sort=@Model.Sort&Type=@Model.Type" 
+                               class="w-12 h-12 flex items-center justify-center rounded-2xl font-black transition-all duration-300 @(i == Model.CurrentPage ? "bg-blue-600 text-white shadow-xl shadow-blue-500/40 scale-110" : "bg-white dark:bg-[#1E2330] text-gray-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600")">
+                                @i
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Tailwind'e ek minik animasyonlar */
+    .animate-in { animation: animateIn 0.5s ease-out; }
+    @@keyframes animateIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>

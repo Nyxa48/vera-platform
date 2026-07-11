@@ -1,0 +1,227 @@
+@page
+@model Vera.Pages.WalletModel
+@{
+    ViewData["Title"] = "Cüzdanım";
+    Layout = "_AppLayout";
+}
+<div class="max-w-7xl mx-auto py-10 px-6 lg:px-8">
+    <div class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                @(Model.CurrentUser.Role == "Employer" ? "Kurumsal Finans Merkezi" : "Cüzdanım")
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 font-medium">
+                @(Model.CurrentUser.Role == "Employer" ? "Bütçe durumunuzu, escrow havuzunu ve ödeme işlemlerini yönetin." : "Bakiye durumunuzu ve geçmiş finansal işlemlerinizi yönetin.")
+            </p>
+        </div>
+        
+        @if (Model.CurrentUser.Role == "Employer")
+        {
+            <button onclick="openBalanceModal()" class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Bakiye Yükle
+            </button>
+        }
+        else
+        {
+            <button class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                Para Çek
+            </button>
+        }
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8 mb-12">
+        <div class="lg:col-span-1 @(Model.CurrentUser.Role == "Employer" ? "bg-slate-900 dark:bg-[#1E2330]" : "bg-gradient-to-br from-gray-900 to-gray-800 dark:from-blue-900 dark:to-indigo-900") rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl border @(Model.CurrentUser.Role == "Employer" ? "border-slate-800 dark:border-white/5" : "border-transparent")">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
+            @if (Model.CurrentUser.Role != "Employer")
+            {
+                <div class="absolute bottom-0 right-10 -mb-10 w-24 h-24 bg-blue-500 opacity-20 rounded-full blur-xl"></div>
+            }
+            
+            <div class="relative z-10 h-full flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Kullanılabilir Bakiye</p>
+                        <h2 class="text-4xl font-black tracking-tighter">₺@Model.CurrentUser.WalletBalance.ToString("N0")<span class="text-xl text-gray-400 font-medium">,00</span></h2>
+                    </div>
+                    <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-sm">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-400 font-medium">@(Model.CurrentUser.Role == "Employer" ? "Kurum / Şirket" : "Hesap Sahibi")</span>
+                        <span class="font-bold tracking-wide uppercase text-white">@Model.CurrentUser.FullName</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm border-t border-white/10 pt-4">
+                        <span class="text-gray-400 font-medium">E-Posta Adresi</span>
+                        <span class="font-bold @(Model.CurrentUser.Role == "Employer" ? "text-slate-300" : "text-blue-300")">@Model.CurrentUser.Email</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 grid sm:grid-cols-2 gap-6">
+            @* İkinci Kart: Toplam Harcama veya Kazanç *@
+            <div class="bg-white dark:bg-[#151A23] rounded-2xl p-8 border border-slate-200 dark:border-white/10 shadow-sm flex flex-col justify-center relative overflow-hidden group">
+                <svg class="absolute -right-4 -bottom-4 w-40 h-40 @(Model.CurrentUser.Role == "Employer" ? "text-slate-500" : "text-green-500") opacity-[0.03] group-hover:scale-110 transition-transform duration-500 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
+                <p class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                    @(Model.CurrentUser.Role == "Employer" ? "Toplam Faturalanan (Harcama)" : "Toplam Kazanç")
+                </p>
+                <h3 class="text-3xl font-black text-gray-900 dark:text-white mb-2">₺@Model.TotalEarnedOrSpent.ToString("N0")</h3>
+                @if (Model.CurrentUser.Role == "Employer")
+                {
+                    <p class="text-sm font-bold text-slate-500 flex items-center gap-1">
+                        Tamamlanan projelere ödenen toplam tutar.
+                    </p>
+                }
+                else
+                {
+                    <p class="text-sm font-bold text-green-500 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        Geçen aya göre %12 arttı
+                    </p>
+                }
+            </div>
+            
+            @* Üçüncü Kart: Güvenli Havuz (Escrow) *@
+            <div class="bg-white dark:bg-[#151A23] rounded-2xl p-8 border border-slate-200 dark:border-white/10 shadow-sm flex flex-col justify-center relative overflow-hidden group">
+                <svg class="absolute -right-4 -bottom-4 w-40 h-40 text-yellow-500 opacity-[0.03] group-hover:scale-110 transition-transform duration-500 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" /></svg>
+                <div class="flex items-center gap-2 mb-2">
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-widest">Güvenli Havuz (Escrow)</p>
+                    <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                </div>
+                <h3 class="text-3xl font-black text-gray-900 dark:text-white mb-2">₺@Model.EscrowBalance.ToString("N0")</h3>
+                <p class="text-sm font-bold text-gray-500 dark:text-gray-400">@Model.ActiveEscrowProjects aktif projede onay bekliyor.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="px-8 py-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h3 class="text-xl font-black text-gray-900 dark:text-white">İşlem Geçmişi</h3>
+            <div class="flex gap-2">
+                <select class="bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 text-sm font-bold rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors cursor-pointer">
+                    <option>Tüm İşlemler</option>
+                    <option>Gelen Ödemeler</option>
+                    <option>Para Çekimleri</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/[0.02]">
+                        <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5">İşlem Detayı</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5">Tarih</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5">Durum</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-white/5 text-right">Durum Bilgisi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                    
+                    @if (Model.FinancialLogs != null && Model.FinancialLogs.Any())
+                    {
+                        @foreach (var log in Model.FinancialLogs)
+                        {
+                            <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-900 dark:text-white">@log.Action</p>
+                                            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">@log.Details</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    @log.Timestamp.ToString("dd MMM yyyy")<br>
+                                    <span class="text-xs opacity-75">@log.Timestamp.ToString("HH:mm")</span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-wider rounded-lg border border-green-200 dark:border-green-500/20">Tamamlandı</span>
+                                </td>
+                                <td class="px-8 py-5 text-right">
+                                    <p class="text-base font-black text-green-600 dark:text-green-400">İşlem Onaylı</p>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="px-8 py-10 text-center text-gray-500 font-medium">Henüz bir hesap hareketiniz bulunmuyor.</td>
+                        </tr>
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* BAKİYE YÜKLE MODALI *@
+<div id="balanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm" onclick="closeBalanceModal()"></div>
+    <div class="relative bg-white dark:bg-[#1E2330] w-full max-w-md p-8 rounded-[2rem] border border-gray-100 dark:border-white/10 shadow-2xl scale-95 transform transition-transform" id="balanceModalBox">
+        
+        <div class="flex justify-between items-start mb-6">
+            <div class="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 flex items-center justify-center">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+            </div>
+            <button onclick="closeBalanceModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+
+        <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-2">Bakiye Yükle</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mb-6 font-medium">Lütfen yüklemek istediğiniz tutarı girin. Bakiye anında cüzdanınıza yansıyacaktır.</p>
+        
+        <form method="post" asp-page-handler="AddBalance">
+            <div class="space-y-2 mb-8 relative">
+                <label class="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest pl-2">Tutar (₺)</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">₺</span>
+                    <input type="number" name="amount" min="1" max="1000000" placeholder="Örn: 5000" required class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+                </div>
+                <div class="flex gap-2 mt-3">
+                    <button type="button" onclick="setAmount(1000)" class="flex-1 py-1.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors">+1.000₺</button>
+                    <button type="button" onclick="setAmount(5000)" class="flex-1 py-1.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors">+5.000₺</button>
+                    <button type="button" onclick="setAmount(10000)" class="flex-1 py-1.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg transition-colors">+10.000₺</button>
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                Bakiyeyi Ekle
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openBalanceModal() {
+        const modal = document.getElementById('balanceModal');
+        const box = document.getElementById('balanceModalBox');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => box.classList.remove('scale-95'), 10);
+    }
+    
+    function closeBalanceModal() {
+        const modal = document.getElementById('balanceModal');
+        const box = document.getElementById('balanceModalBox');
+        box.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 150);
+    }
+
+    function setAmount(val) {
+        document.querySelector('input[name="amount"]').value = val;
+    }
+</script>

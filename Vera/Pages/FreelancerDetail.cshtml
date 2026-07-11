@@ -1,0 +1,308 @@
+@page
+@model Vera.Pages.FreelancerDetailModel
+@{
+    ViewData["Title"] = Model.ProfileUser.FullName + " — Profil";
+    Layout = "_AppLayout";
+}
+
+@{
+    var initials = Model.ProfileUser.FullName.Length >= 2
+        ? Model.ProfileUser.FullName.Substring(0, 2).ToUpper()
+        : Model.ProfileUser.FullName.Substring(0, 1).ToUpper();
+    var memberSince = Model.ProfileUser.CreatedAt.ToString("MMMM yyyy");
+
+    // Tutarlı renk sistemi — Freelancers sayfasıyla aynı
+    var avatarGradients = new[] {
+        "from-blue-500 to-indigo-600",
+        "from-emerald-500 to-teal-600",
+        "from-orange-500 to-red-500",
+        "from-violet-500 to-purple-600",
+        "from-pink-500 to-rose-600",
+        "from-cyan-500 to-blue-600",
+        "from-amber-500 to-orange-600",
+        "from-fuchsia-500 to-pink-600"
+    };
+    var colorIndex = Model.ProfileUser.Id % avatarGradients.Length;
+    var avatarColor = avatarGradients[colorIndex];
+}
+
+@* KAPAK BANNER *@
+<div class="relative">
+    <div class="h-56 md:h-72 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-b-[3rem] relative overflow-hidden">
+        @* Dekoratif Desenler *@
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-20 w-64 h-64 border border-white rounded-full"></div>
+            <div class="absolute -bottom-20 right-10 w-96 h-96 border border-white rounded-full"></div>
+            <div class="absolute top-5 right-40 w-40 h-40 border border-white rounded-full"></div>
+        </div>
+
+        @* Profili Düzenle Butonu (Sadece kendi profili) *@
+        @if (Model.IsOwnProfile)
+        {
+            <div class="absolute top-6 right-8 z-20">
+                <a href="/Settings" class="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-bold rounded-2xl transition-all active:scale-95 border border-white/20 shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>
+                    Profili Düzenle
+                </a>
+            </div>
+        }
+    </div>
+
+    @* PROFİL KARTI (Floating) *@
+    <div class="max-w-6xl mx-auto px-6 lg:px-10 -mt-20 relative z-10">
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 shadow-2xl border border-gray-100 dark:border-white/5">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                @* AVATAR *@
+                <div class="w-28 h-28 rounded-[2rem] bg-gradient-to-br @avatarColor flex items-center justify-center text-white font-black text-4xl shadow-xl shadow-blue-500/30 shrink-0">
+                    @initials
+                </div>
+
+                @* İSİM, UNVAN, BADGE'LER *@
+                <div class="flex-1">
+                    <h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">@Model.ProfileUser.FullName</h1>
+                    <p class="text-lg font-bold text-blue-600 dark:text-blue-400 mt-1">
+                        @(string.IsNullOrEmpty(Model.ProfileUser.Title) ? "Freelancer Uzman" : Model.ProfileUser.Title)
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 mt-3">
+                        <span class="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-black rounded-xl border border-green-200 dark:border-green-500/20">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            Çevrimiçi
+                        </span>
+                        <span class="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 text-xs font-black rounded-xl border border-yellow-200 dark:border-yellow-500/20">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            4.9 Puan
+                        </span>
+                        <span class="px-3 py-1.5 bg-gray-50 dark:bg-white/5 text-gray-500 text-xs font-bold rounded-xl border border-gray-200 dark:border-white/10">
+                            📅 Üye: @memberSince
+                        </span>
+                    </div>
+                </div>
+
+                @* İSTATİSTİK MİNİ KARTLAR *@
+                <div class="flex gap-4 shrink-0">
+                    <div class="text-center px-5 py-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 min-w-[90px]">
+                        <p class="text-2xl font-black text-gray-900 dark:text-white">@Model.CompletedProjectsCount</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Tamamlanan</p>
+                    </div>
+                    <div class="text-center px-5 py-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 min-w-[90px]">
+                        <p class="text-2xl font-black text-orange-500">@Model.ActiveProjectsCount</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">@(Model.ProfileUser.Role == "Employer" ? "Açık/Aktif" : "Aktif")</p>
+                    </div>
+                    <div class="text-center px-5 py-4 bg-blue-50 dark:bg-blue-500/10 rounded-2xl border border-blue-100 dark:border-blue-500/10 min-w-[90px]">
+                        <p class="text-2xl font-black text-blue-600 dark:text-blue-400">₺@(Model.TotalEarnings > 0 ? (Model.TotalEarnings / 1000).ToString("N0") + "B" : "0")</p>
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">@(Model.ProfileUser.Role == "Employer" ? "Harcanan" : "Kazanç")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* İÇERİK ALANI *@
+<div class="max-w-6xl mx-auto mt-10 px-6 lg:px-10 grid lg:grid-cols-3 gap-10 pb-20">
+
+    @* SOL: Hakkında + Tamamlanan Projeler *@
+    <div class="lg:col-span-2 space-y-10">
+
+        @* HAKKIMDA *@
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+            <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3 mb-5">
+                <span class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center text-lg">👤</span>
+                Hakkımda
+            </h3>
+            <p class="text-base text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                @(string.IsNullOrEmpty(Model.ProfileUser.About) ? "Bu kullanıcı henüz bir hakkında yazısı eklememiş." : Model.ProfileUser.About)
+            </p>
+        </div>
+
+        @* TAMAMLANAN PROJELER *@
+        @if (Model.CompletedProjects.Any())
+        {
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 rounded-xl bg-green-50 dark:bg-green-500/10 text-green-500 flex items-center justify-center text-lg">✅</span>
+                    Tamamlanan @(Model.ProfileUser.Role == "Employer" ? "İşler" : "Projeler")
+                </h3>
+                <div class="grid sm:grid-cols-2 gap-5">
+                    @foreach (var project in Model.CompletedProjects)
+                    {
+                        <a href="/ProjectDetail?id=@project.Id" class="block p-5 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-100 dark:border-white/5 hover:border-green-300 dark:hover:border-green-500/30 transition-all">
+                            <h4 class="font-black text-gray-900 dark:text-white text-lg mb-2">@project.Title</h4>
+                            <p class="text-sm text-gray-500 line-clamp-2 mb-4">@project.Description</p>
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-bold rounded-lg">Tamamlandı</span>
+                                <span class="text-sm font-black text-gray-900 dark:text-white">₺@project.Budget.ToString("N0")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.ProfileUser.Role == "Employer")
+        {
+            @* AÇIK İLANLAR (ŞİRKET İÇİN) *@
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center text-lg">📢</span>
+                    Açık İlanlar
+                </h3>
+                
+                @if (Model.EmployerOpenProjects.Any())
+                {
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        @foreach (var project in Model.EmployerOpenProjects)
+                        {
+                            <a href="/ProjectDetail?id=@project.Id" class="block group cursor-pointer border border-gray-200 dark:border-white/5 rounded-3xl p-5 hover:border-blue-300 dark:hover:border-blue-500/30 transition-all hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="px-3 py-1 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold rounded uppercase tracking-wider">Açık</span>
+                                    <span class="text-sm font-black text-gray-900 dark:text-white">₺@project.Budget.ToString("N0")</span>
+                                </div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-lg line-clamp-2 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">@project.Title</h4>
+                                <p class="text-sm text-gray-500 font-medium line-clamp-2">@project.Description</p>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-10 bg-gray-50 dark:bg-white/5 rounded-3xl border border-dashed border-gray-200 dark:border-white/10">
+                        <span class="text-4xl block mb-3">📭</span>
+                        <p class="text-gray-500 font-medium">Şu anda açık bir ilan bulunmuyor.</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            @* PORTFOLYO (FREELANCER İÇİN) *@
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3 mb-6">
+                    <span class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-500 flex items-center justify-center text-lg">🎨</span>
+                    Portfolyo (Tamamlanan İşler)
+                </h3>
+                
+                @if (Model.CompletedProjects.Any())
+                {
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        @{
+                            // Farklı projeler için farklı ikon ve renkler
+                            var portfolioIcons = new[] { "💻", "📊", "🚀", "🎨", "📱", "⚙️", "📈", "✨" };
+                        }
+                        
+                        @foreach (var project in Model.CompletedProjects)
+                        {
+                            var iconIndex = project.Id % portfolioIcons.Length;
+                            var icon = portfolioIcons[iconIndex];
+
+                            <a href="/ProjectDetail?id=@project.Id" class="block group cursor-pointer">
+                                <div class="h-48 rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-[#151A23] dark:to-white/[0.02] mb-4 overflow-hidden border border-gray-200 dark:border-white/5 flex items-center justify-center relative">
+                                    <span class="text-6xl opacity-30 group-hover:opacity-50 group-hover:scale-110 transition-all duration-500 z-10">@icon</span>
+                                    @* Dekoratif arkaplan deseni *@
+                                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNjdXJyZW50Q29sb3IiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-50"></div>
+                                </div>
+                                <h4 class="font-bold text-gray-900 dark:text-white text-lg line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">@project.Title</h4>
+                                <p class="text-sm text-gray-500 font-medium line-clamp-2">@project.Description</p>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-10 bg-gray-50 dark:bg-white/5 rounded-3xl border border-dashed border-gray-200 dark:border-white/10">
+                        <span class="text-4xl block mb-3">📂</span>
+                        <p class="text-gray-500 font-medium">Henüz tamamlanmış bir proje bulunmuyor.</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @* SAĞ: Aksiyonlar + Yetenekler *@
+    <div class="space-y-8">
+
+        @* AKSİYON KARTI *@
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 text-center">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Bakiye</p>
+                    <p class="text-xl font-black text-gray-900 dark:text-white">₺@Model.ProfileUser.WalletBalance.ToString("N0")</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 text-center">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Başarı</p>
+                    <p class="text-xl font-black text-green-500">%100</p>
+                </div>
+            </div>
+
+            @if (Model.IsOwnProfile)
+            {
+                <a href="/Dashboard" class="block text-center w-full py-4 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-black rounded-2xl transition-all hover:-translate-y-0.5">
+                    Kontrol Paneline Git
+                </a>
+            }
+            else
+            {
+                <a href="/Messages?chatWith=@Model.ProfileUser.Id" class="block text-center w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
+                    💬 Mesaj Gönder
+                </a>
+            }
+        </div>
+
+        @* MESAJ KUTUSU (Başka birinin profili) *@
+        @if (!Model.IsOwnProfile)
+        {
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+                <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                    <span>✉️</span> Hızlı Mesaj
+                </h4>
+                <form method="post" asp-page-handler="SendMessage" asp-route-id="@Model.ProfileUser.Id" class="space-y-3">
+                    <textarea asp-for="MessageContent" rows="3" placeholder="Merhaba, profilinizi inceledim..." required class="w-full bg-gray-50 dark:bg-[#151A23] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none font-medium"></textarea>
+                    <button type="submit" class="w-full py-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold rounded-xl shadow-lg transition-all text-sm">
+                        Mesajı İlet
+                    </button>
+                </form>
+            </div>
+        }
+
+        @* YETENEKLER *@
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+            <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                <span>🛠️</span> Yetenekler
+            </h4>
+            <div class="flex flex-wrap gap-2">
+                @if (!string.IsNullOrEmpty(Model.ProfileUser.Skills))
+                {
+                    @foreach (var skill in Model.ProfileUser.Skills.Split(','))
+                    {
+                        <span class="px-3 py-1.5 bg-gray-50 dark:bg-[#151A23] text-xs font-bold text-gray-700 dark:text-gray-300 rounded-xl border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-500/30 transition-colors">@skill.Trim()</span>
+                    }
+                }
+                else
+                {
+                    <p class="text-sm text-gray-500 font-medium">Henüz yetenek eklenmemiş. <a href="/Settings" class="text-blue-600 hover:underline">Ayarlar</a>'dan ekleyebilirsiniz.</p>
+                }
+            </div>
+        </div>
+
+        @* İLETİŞİM BİLGİLERİ *@
+        <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-4">
+            <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                <span>📧</span> İletişim
+            </h4>
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 text-sm">
+                    <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="font-medium text-gray-600 dark:text-gray-400">@Model.ProfileUser.Email</span>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                    <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="font-medium text-gray-600 dark:text-gray-400">Katılım: @memberSince</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

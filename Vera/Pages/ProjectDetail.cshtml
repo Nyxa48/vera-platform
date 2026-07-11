@@ -1,0 +1,164 @@
+@page
+@model Vera.Pages.ProjectDetailModel
+@{
+    ViewData["Title"] = Model.CurrentProject.Title;
+}
+
+<div class="max-w-7xl mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8">
+    
+    <nav class="flex text-sm font-medium text-gray-500 dark:text-gray-400 mb-8">
+        <a href="/Index" class="hover:text-blue-600 transition-colors">Ana Sayfa</a>
+        <span class="mx-2">/</span>
+        <a href="/Projects" class="hover:text-blue-600 transition-colors">Projeler</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-900 dark:text-white font-bold">@Model.CurrentProject.Title</span>
+    </nav>
+
+    <div class="space-y-4 mb-10">
+        <div class="flex flex-wrap items-center gap-3">
+            @if (Model.CurrentProject.Status == "Açık")
+            {
+                <span class="px-3 py-1 bg-green-100 dark:bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs font-black uppercase tracking-wider">Açık İlan</span>
+            }
+            else
+            {
+                <span class="px-3 py-1 bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 rounded-full text-xs font-black uppercase tracking-wider">Kapalı İlan</span>
+            }
+            <span class="text-sm font-bold text-gray-400">@Model.CurrentProject.CreatedAt.ToString("dd MMM yyyy") yayınlandı</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">@Model.CurrentProject.Title</h1>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 md:p-12 border border-gray-100 dark:border-white/5 shadow-sm">
+                <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-6">Proje Detayları</h2>
+                <div class="prose dark:prose-invert max-w-none">
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed font-medium text-lg whitespace-pre-wrap">@Model.CurrentProject.Description</p>
+                </div>
+
+                <div class="mt-10 pt-10 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div class="px-5 py-4 bg-gray-50 dark:bg-[#151A23] rounded-2xl border border-gray-200 dark:border-white/10">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Ödeme Şekli</p>
+                        <p class="text-sm font-black text-gray-900 dark:text-white">@(Model.CurrentProject.IsHourly ? "Saatlik Ücretlendirme" : "Sabit Fiyatlı Proje")</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.CurrentProject.RequiredLevel))
+                    {
+                        var levelColor = Model.CurrentProject.RequiredLevel == "Uzman" ? "text-red-500 bg-red-50 dark:bg-red-500/10" :
+                                         Model.CurrentProject.RequiredLevel == "Orta" ? "text-yellow-600 bg-yellow-50 dark:bg-yellow-500/10" :
+                                         "text-green-600 bg-green-50 dark:bg-green-500/10";
+                        <div class="px-5 py-4 bg-gray-50 dark:bg-[#151A23] rounded-2xl border border-gray-200 dark:border-white/10">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Uzmanlık Seviyesi</p>
+                            <p class="text-sm font-black @levelColor px-2 py-0.5 rounded-lg inline-block">@Model.CurrentProject.RequiredLevel</p>
+                        </div>
+                    }
+                    @if (Model.CurrentProject.Deadline.HasValue)
+                    {
+                        var daysLeft = (Model.CurrentProject.Deadline.Value - DateTime.Now).Days;
+                        var urgency = daysLeft < 3 ? "text-red-600 dark:text-red-400" : daysLeft < 7 ? "text-yellow-600 dark:text-yellow-400" : "text-gray-900 dark:text-white";
+                        <div class="px-5 py-4 bg-gray-50 dark:bg-[#151A23] rounded-2xl border border-gray-200 dark:border-white/10">
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Son Başvuru</p>
+                            <p class="text-sm font-black @urgency">@Model.CurrentProject.Deadline.Value.ToString("dd MMM yyyy")</p>
+                            @if (daysLeft >= 0)
+                            {
+                                <p class="text-[10px] @urgency opacity-70">@daysLeft gün kaldı</p>
+                            }
+                            else
+                            {
+                                <p class="text-[10px] text-red-500">Süresi doldu</p>
+                            }
+                        </div>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(Model.CurrentProject.Tags))
+                {
+                    <div class="mt-6">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 pl-1">Kategori / Etiketler</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (var tag in Model.CurrentProject.Tags.Split(','))
+                            {
+                                <span class="px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg border border-blue-100 dark:border-blue-500/20">@tag.Trim()</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <aside class="space-y-6">
+            
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <div>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Tahmini Bütçe</p>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-4xl font-black text-gray-900 dark:text-white">₺@Model.CurrentProject.Budget.ToString("N0")</span>
+                        @if (Model.CurrentProject.IsHourly)
+                        {
+                            <span class="text-lg font-bold text-gray-400">/saat</span>
+                        }
+                    </div>
+                </div>
+
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a href="/Login" class="block w-full py-4 bg-blue-600 text-white text-center font-black rounded-2xl shadow-lg transition-all hover:scale-[1.02]">Giriş Yap ve Teklif Ver</a>
+                }
+                else if (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Freelancer")
+                {
+                    @if (Model.HasActiveJob)
+                    {
+                        <div class="p-4 bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 rounded-2xl text-center">
+                            <p class="text-sm font-bold text-orange-600 dark:text-orange-400">⚠️ Mevcut bir işiniz var!</p>
+                            <p class="text-[10px] text-orange-500 mt-1 font-medium">Yenisini almadan önce elindekini bitirmelisin.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="AcceptJob" asp-route-id="@Model.CurrentProject.Id">
+                            <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1 active:scale-95">İşi Kabul Et 🚀</button>
+                        </form>
+                    }
+                }
+                else
+                {
+                    <div class="text-center text-xs font-bold text-gray-400 italic">İlan sahibi veya işveren teklif veremez.</div>
+                }
+            </div>
+
+            <div class="bg-white dark:bg-[#1E2330] rounded-[2.5rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm space-y-6">
+                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest">İşveren Hakkında</h4>
+                
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-black shadow-inner">
+                        @(Model.Employer.FullName.Substring(0, 1).ToUpper())
+                    </div>
+                    <div>
+                        <h4 class="font-black text-gray-900 dark:text-white text-lg">@Model.Employer.FullName</h4>
+                        <p class="text-sm font-bold text-blue-600">@Model.Employer.Title</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-6 border-t border-gray-100 dark:border-white/5">
+                    <div class="flex items-center gap-3">
+                        <span class="text-green-500 text-lg">✓</span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">Escrow ile Güvenli Ödeme</p>
+                            <p class="text-[10px] text-gray-500">Proje bütçesi güvenli havuzda tutulur.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-blue-500 text-lg">📅</span>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900 dark:text-white">@Model.Employer.CreatedAt.ToString("MMMM yyyy")</p>
+                            <p class="text-[10px] text-gray-500">Tarihinden beri Vera üyesi.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="/FreelancerDetail?id=@Model.Employer.Id" class="mt-4 block w-full py-2.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 text-sm font-bold text-center rounded-xl transition-colors">
+                    Şirket Profilini Gör &rarr;
+                </a>
+            </div>
+        </aside>
+    </div>
+</div>

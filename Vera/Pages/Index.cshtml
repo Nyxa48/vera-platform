@@ -1,0 +1,243 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Yepyeni Bir Deneyim";
+}
+
+<div class="space-y-24 pb-24">
+
+    <!-- 1. HERO BÖLÜMÜ-->
+    <div class="relative pt-40 pb-20 lg:pt-56 lg:pb-32 overflow-hidden">
+        
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 dark:opacity-10 pointer-events-none">
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-400 to-transparent rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+            <h1 class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight">
+                Dünyanın en iyi yeteneklerini <br class="hidden md:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600 italic">Vera'da </span>bulun.
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+                Logodan web sitesine, metin yazarlığından mobil uygulamaya kadar her şey için doğru uzmanla saniyeler içinde eşleşin.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Employer"))
+                    {
+                        <a href="/PostJob" class="w-full sm:w-auto px-10 py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-2xl shadow-lg shadow-pink-500/30 transition-all hover:-translate-y-1 text-lg">
+                            İş İlanı Verin
+                        </a>
+                        <a href="/Freelancers" class="w-full sm:w-auto px-10 py-4 bg-transparent border-2 border-gray-200 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-500 text-gray-900 dark:text-white font-bold rounded-2xl transition-all hover:-translate-y-1 hover:bg-gray-50 dark:hover:bg-white/5 text-lg">
+                            Yetenekleri Keşfet
+                        </a>
+                    }
+                    else if (User.IsInRole("Freelancer"))
+                    {
+                        <a href="/Projects" class="w-full sm:w-auto px-10 py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-2xl shadow-lg shadow-pink-500/30 transition-all hover:-translate-y-1 text-lg">
+                            Projeleri Keşfet
+                        </a>
+                        <a href="/WorkArea" class="w-full sm:w-auto px-10 py-4 bg-transparent border-2 border-gray-200 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-500 text-gray-900 dark:text-white font-bold rounded-2xl transition-all hover:-translate-y-1 hover:bg-gray-50 dark:hover:bg-white/5 text-lg">
+                            Çalışma Alanım
+                        </a>
+                    }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        <a href="/Admin" class="w-full sm:w-auto px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-lg shadow-red-500/30 transition-all hover:-translate-y-1 text-lg">
+                            Yönetim Paneli'ne Git
+                        </a>
+                    }
+                }
+                else
+                {
+                    <a href="/Register?role=employer" class="w-full sm:w-auto px-10 py-4 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-2xl shadow-lg shadow-pink-500/30 transition-all hover:-translate-y-1 text-lg">
+                        İş İlanı Verin
+                    </a>
+                    <a href="/Register?role=freelancer" class="w-full sm:w-auto px-10 py-4 bg-transparent border-2 border-gray-200 dark:border-gray-700 hover:border-blue-600 dark:hover:border-blue-500 text-gray-900 dark:text-white font-bold rounded-2xl transition-all hover:-translate-y-1 hover:bg-gray-50 dark:hover:bg-white/5 text-lg">
+                        Para Kazanmaya Başla
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. GÜVENİLİR MARKALAR -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-y border-gray-100 dark:border-white/[0.05] py-12">
+        <p class="text-center text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-10">Altyapımızda Güvendiğimiz Teknoloji Partnerleri</p>
+        
+        <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 cursor-default">
+            
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#00A4EF] transition-colors">Microsoft</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#06B6D4] transition-colors">Tailwind CSS</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#2496ED] transition-colors">Docker</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#6DB33F] transition-colors">Spring</span>
+            
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#F24E1E] transition-colors">Figma</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#24292F] dark:hover:text-[#F0F6FC] transition-colors">GitHub</span>
+            
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#635BFF] transition-colors">Stripe</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-black dark:hover:text-blue-400 transition-colors">Vercel</span>
+            
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#336791] transition-colors">PostgreSQL</span>
+            <span class="text-xl md:text-2xl font-black tracking-tighter hover:text-[#3ECF8E] transition-colors">Supabase</span>
+            
+        </div>
+    </div>
+
+    <!-- 3. Kategoriler -->
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-12">
+        
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-64 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 rounded-full blur-[100px] opacity-0 dark:opacity-100 pointer-events-none z-0"></div>
+
+        <div class="relative z-10 text-center space-y-4">
+            <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Ne yaptırmak istiyorsunuz?</h2>
+            <p class="text-gray-500">İhtiyacınız olan her uzmanlık alanı için binlerce yetenekli freelancer burada.</p>
+        </div>
+
+        <div class="relative z-10 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 md:gap-8">
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-blue-600 dark:hover:bg-blue-600 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">💻</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Web Sitesi</h3>
+            </a>
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-pink-600 dark:hover:bg-pink-600 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🎨</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Logo Tasarımı</h3>
+            </a>
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-purple-600 dark:hover:bg-purple-600 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">📱</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Mobil Uygulama</h3>
+            </a>
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-green-600 dark:hover:bg-green-600 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">✍️</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Çeviri & Metin</h3>
+            </a>
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-orange-500 dark:hover:bg-orange-500 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">📈</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Dijital Pazarlama</h3>
+            </a>
+            
+            <a href="#" class="group flex flex-col items-center justify-center p-6 bg-white dark:bg-[#151A23] border border-gray-100 dark:border-white/[0.05] rounded-3xl hover:border-transparent hover:bg-indigo-600 dark:hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-1 shadow-sm">
+                <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🎬</div>
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-white text-center">Video & Animasyon</h3>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- 4.Özellikler -->
+    <div class="bg-gray-50 dark:bg-transparent py-24 border-y border-transparent dark:border-white/[0.02]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <h2 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                        İşlerinizi halletmenin <br /> en akıllı yolu.
+                    </h2>
+                
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-xl font-black">1</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Her Bütçeye Uygun</h4>
+                                <p class="text-gray-500 dark:text-gray-400">Sabit fiyatlı projelerden saatlik ücretlere kadar. Kaliteden ödün vermeden bütçenize uygun yeteneği bulun.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0 text-xl font-black">2</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Güvenli Ödeme</h4>
+                                <p class="text-gray-500 dark:text-gray-400">Ödemeniz, iş tam olarak bitene ve siz %100 memnun kalana kadar havuzda güvenle bekletilir.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 text-xl font-black">3</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">24/7 Canlı Destek</h4>
+                                <p class="text-gray-500 dark:text-gray-400">Dünyanın neresinde olursanız olun, uzman destek ekibimiz projenizin her adımında yanınızda.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-blue-600 to-pink-600 rounded-[3rem] blur-xl opacity-20 dark:opacity-30"></div>
+                    <div class="relative bg-white dark:bg-[#1E2330] rounded-[3rem] p-8 shadow-2xl dark:shadow-blue-900/10 border border-gray-100 dark:border-white/10 h-[500px] flex flex-col justify-center items-center text-center">
+                        <span class="text-9xl mb-6 drop-shadow-2xl">🤝</span>
+                        <h3 class="text-2xl font-black text-gray-900 dark:text-white italic">Mükemmel Eşleşme</h3>
+                        <p class="text-gray-500 dark:text-gray-400 mt-2">Vera algoritması sizi en doğru yetenekle buluşturur.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Platform İstatistikleri -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-100 dark:border-white/[0.05]">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center divide-x-0 md:divide-x divide-gray-200 dark:divide-white/10">
+        
+            <div class="space-y-2">
+                <h3 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
+                    12<span class="text-blue-500">B+</span>
+                </h3>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Kayıtlı Freelancer</p>
+            </div>
+        
+            <div class="space-y-2">
+                <h3 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
+                    4.8<span class="text-pink-500">/5</span>
+                </h3>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Müşteri Memnuniyeti</p>
+            </div>
+        
+            <div class="space-y-2">
+                <h3 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
+                    34<span class="text-purple-500">B+</span>
+                </h3>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Tamamlanan Proje</p>
+            </div>
+        
+            <div class="space-y-2">
+                <h3 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white">
+                    <span class="text-green-500">₺</span>45<span class="text-green-500">M+</span>
+                </h3>
+                <p class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">İşlem Hacmi</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 6.CTA -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-[3rem] p-12 md:p-20 text-center text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="relative z-10 space-y-8">
+                <h2 class="text-4xl md:text-5xl font-black tracking-tighter">Hadi harika bir şeyler yapalım.</h2>
+                <p class="text-xl text-blue-100 max-w-2xl mx-auto">Vera ile bugün projenizi başlatın veya yeteneklerinizi paraya dönüştürün.</p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a href="/Dashboard" class="px-10 py-5 bg-white text-blue-600 font-bold rounded-2xl hover:scale-105 transition-transform text-lg shadow-xl">
+                            Kontrol Paneline Git
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-page="/Register" class="px-10 py-5 bg-white text-blue-600 font-bold rounded-2xl hover:scale-105 transition-transform text-lg shadow-xl">
+                            Ücretsiz Kaydol
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

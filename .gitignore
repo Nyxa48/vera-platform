@@ -1,0 +1,8 @@
+# .NET dosyaları
+bin/
+obj/
+
+# SQLite Veritabanı dosyaları
+*.db
+*.sqlite
+*.sqlite3

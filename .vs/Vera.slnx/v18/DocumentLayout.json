@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Emir\\Desktop\\Her\u015Fey\\ders notlar\u0131\\web\\DONEM2\\Vera\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B7B367FB-053A-A054-7403-BD53B6BE21CE}|Vera\\Vera.csproj|c:\\users\\emir\\desktop\\her\u015Fey\\ders notlar\u0131\\web\\donem2\\vera\\vera\\pages\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B7B367FB-053A-A054-7403-BD53B6BE21CE}|Vera\\Vera.csproj|solutionrelative:vera\\pages\\admin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Admin.cshtml",
+              "DocumentMoniker": "C:\\Users\\Emir\\Desktop\\Her\u015Fey\\ders notlar\u0131\\web\\DONEM2\\Vera\\Vera\\Pages\\Admin.cshtml",
+              "RelativeDocumentMoniker": "Vera\\Pages\\Admin.cshtml",
+              "ToolTip": "C:\\Users\\Emir\\Desktop\\Her\u015Fey\\ders notlar\u0131\\web\\DONEM2\\Vera\\Vera\\Pages\\Admin.cshtml",
+              "RelativeToolTip": "Vera\\Pages\\Admin.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-12T06:07:13.913Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
