@@ -6,3 +6,6 @@ obj/
 *.db
 *.sqlite
 *.sqlite3
+
+# Word Documents / Reports
+*.docx
